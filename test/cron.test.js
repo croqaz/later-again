@@ -17,9 +17,26 @@ test('cron seconds', t => {
 test('cron minutes', t => {
   t.deepEqual(parseCron('1 * * * *').schedules[0], { s: [0], m: [1] })
   t.deepEqual(parseCron('* 1 * * * *', true).schedules[0], { m: [1] })
+  t.deepEqual(parseCron('* 1-3 * * * *', true).schedules[0], { m: [1, 2, 3] })
 })
 
 test('cron hours', t => {
   t.deepEqual(parseCron('* 1 * * *').schedules[0], { s: [0], h: [1] })
   t.deepEqual(parseCron('* * 1 * * *', true).schedules[0], { h: [1] })
+  t.deepEqual(parseCron('* * 3-5 * * *', true).schedules[0], { h: [3, 4, 5] })
+})
+
+test('cron months', t => {
+  t.deepEqual(parseCron('* * * * 1 *', true).schedules[0], { M: [1] })
+  t.deepEqual(parseCron('* * * * 2-4 *', true).schedules[0], { M: [2, 3, 4] })
+  t.deepEqual(parseCron('* * * * 4,6,8 *', true).schedules[0], { M: [4, 6, 8] })
+})
+
+test('cron keywords', t => {
+  t.deepEqual(parseCron('@yearly').schedules, parseCron('0 0 1 1 *').schedules)
+  t.deepEqual(parseCron('@annually').schedules, parseCron('0 0 1 1 *').schedules)
+  t.deepEqual(parseCron('@monthly').schedules, parseCron('0 0 1 * *').schedules)
+  t.deepEqual(parseCron('@weekly').schedules, parseCron('0 0 * * 0').schedules)
+  t.deepEqual(parseCron('@daily').schedules, parseCron('0 0 * * *').schedules)
+  t.deepEqual(parseCron('@hourly').schedules, parseCron('0 * * * *').schedules)
 })

@@ -1,0 +1,35 @@
+{
+  "author": [
+    "Cristi Constantin <cristi.constantin@live.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/croqaz/later-again/issues"
+  },
+  "contributors": [
+    "Bill BunKat (https://github.com/bunkat)"
+  ],
+  "description": "Defining recurring schedules and calculating future (or past) occurrences",
+  "engines": {
+    "node": ">=8"
+  },
+  "homepage": "https://github.com/croqaz/later-again#readme",
+  "keywords": [
+    "later",
+    "schedule"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "later-again",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/croqaz/later-again.git"
+  },
+  "scripts": {
+    "test": "npx ava --fail-fast --verbose"
+  },
+  "version": "0.0.1",
+  "devDependencies": {
+    "ava": "0.25.0",
+    "lodash.range": "3.2.0"
+  }
+}

@@ -31,6 +31,7 @@ module.exports = function parseCron (expr, hasSeconds) {
     '@MONTHLY': '0 0 1 * *',
     '@WEEKLY': '0 0 * * 0',
     '@DAILY': '0 0 * * *',
+    '@MIDNIGHT': '0 0 * * *',
     '@HOURLY': '0 * * * *'
   };
 

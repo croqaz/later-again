@@ -21,12 +21,12 @@ function arraySort(arr, zeroIsLast) {
 /**
  * Array next
  *
- * Returns the next valid value in a range of values, wrapping as needed. Assumes
- * the array has already been sorted.
+ * Returns the next valid value in a range of values, wrapping as needed.
+ * Assumes the array has already been sorted.
  */
 function arrayNext(val, values, extent) {
   var cur
-  var zeroIsLargest = extent[0] !== 0
+  const zeroIsLargest = extent[0] !== 0
   var nextIdx = 0
 
   for (var i = values.length - 1; i > -1; --i) {
@@ -54,13 +54,12 @@ function arrayNext(val, values, extent) {
  * Assumes the array has already been sorted.
  */
 function arrayNextInvalid(val, values, extent) {
-  var min = extent[0],
-    max = extent[1],
-    len = values.length,
-    zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0,
-    next = val,
-    i = values.indexOf(val),
-    start = next
+  const [min, max] = extent
+  const len = values.length
+  const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0
+  var next = val
+  var i = values.indexOf(val)
+  var start = next
 
   while (next === (values[i] || zeroVal)) {
     next++
@@ -89,8 +88,8 @@ function arrayNextInvalid(val, values, extent) {
  */
 function arrayPrev(val, values, extent) {
   var cur
-  var len = values.length
-  var zeroIsLargest = extent[0] !== 0
+  const len = values.length
+  const zeroIsLargest = extent[0] !== 0
   var prevIdx = len - 1
 
   for (var i = 0; i < len; i++) {
@@ -118,13 +117,12 @@ function arrayPrev(val, values, extent) {
  * Assumes the array has already been sorted.
  */
 function arrayPrevInvalid(val, values, extent) {
-  var min = extent[0],
-    max = extent[1],
-    len = values.length,
-    zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0,
-    next = val,
-    i = values.indexOf(val),
-    start = next
+  const [min, max] = extent
+  const len = values.length
+  const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0
+  var next = val
+  var i = values.indexOf(val)
+  var start = next
 
   while (next === (values[i] || zeroVal)) {
     next--

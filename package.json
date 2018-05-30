@@ -25,13 +25,16 @@
     "url": "git+https://github.com/croqaz/later-again.git"
   },
   "scripts": {
+    "format": "npx prettier --write src/*.js && npx standard --fix src/*.js",
     "test": "npx ava --fail-fast --verbose"
   },
   "version": "0.0.1",
   "devDependencies": {
     "ava": "0.25.0",
     "lodash.range": "3.2.0",
+    "mocha": "5.2.0",
     "prettier": "1.13.2",
+    "should": "13.2.1",
     "standard": "11.0.1"
   }
 }

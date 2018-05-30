@@ -13,12 +13,12 @@
 const recur = require('./recur')
 
 module.exports = function parseText (str) {
-  var pos = 0,
-    input = '',
-    error
+  var pos = 0
+  var input = ''
+  var error
 
   // Regex expressions for all of the valid tokens
-  var TOKENTYPES = {
+  const TOKENTYPES = {
     eof: /^$/,
     rank: /^((\d+)(st|nd|rd|th)?)\b/,
     time: /^((([0]?[1-9]|1[0-2]):[0-5]\d(\s)?(am|pm))|(([0]?\d|1\d|2[0-3]):[0-5]\d))\b/,
@@ -57,7 +57,7 @@ module.exports = function parseText (str) {
   }
 
   // Array to convert string names to valid numerical values
-  var NAMES = {
+  const NAMES = {
     jan: 1,
     feb: 2,
     mar: 3,
@@ -248,7 +248,7 @@ module.exports = function parseText (str) {
     input = str
     error = -1
 
-    var r = recur()
+    const r = recur()
     while (pos < input.length && error < 0) {
       var token = parseToken([
         TOKENTYPES.every,

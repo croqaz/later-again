@@ -1,6 +1,7 @@
 import test from 'ava'
 import range from 'lodash.range'
-import parseText from '../src/parseText'
+import parse from '../src/parse'
+const parseText = parse.text
 
 test('every unit', t => {
   t.deepEqual(parseText('every second').schedules[0], { s: [0] })
@@ -25,7 +26,7 @@ test('every 10 units', t => {
 })
 
 test('weekdays', t => {
-  t.deepEqual(parseText('every weekday').schedules[0], { d: [2, 3, 4, 5, 6] })
+  t.deepEqual(parseText('every weekday').schedules[0], { d: range(2, 7) })
   t.deepEqual(parseText('every weekend').schedules[0], { d: [1, 7] })
   t.deepEqual(parseText('every 2nd day of the week').schedules[0], { d: [1, 3, 5, 7] })
 })

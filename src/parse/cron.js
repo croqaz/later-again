@@ -14,7 +14,7 @@
  * @param {Bool} hasSeconds: True if the expression uses a seconds field
  * @api public
  */
-module.exports = function parseCron (expr, hasSeconds) {
+module.exports = function parseCron (expr, hasSeconds, tz) {
   // Constant array to convert valid names to values
   var NAMES = {
     JAN: 1,
@@ -102,22 +102,33 @@ module.exports = function parseCron (expr, hasSeconds) {
    * @param {Int} inc: The increment to use between min and max
    */
   function add (sched, name, min, max, inc) {
-    var i = min
-
     if (!sched[name]) {
       sched[name] = []
     }
 
-    while (i <= max) {
-      if (sched[name].indexOf(i) < 0) {
-        sched[name].push(i)
+    const loopTo = function (start, max) {
+      var i = start
+
+      while (i <= max) {
+        if (sched[name].indexOf(i) < 0) {
+          sched[name].push(i)
+        }
+        i += inc || 1
       }
-      i += inc || 1
     }
 
-    sched[name].sort(function (a, b) {
-      return a - b
-    })
+    // if the min is greater than the max, loop it
+    if (min > max) {
+      const field = FIELDS[name]
+
+      // add up to the max value
+      loopTo(min, field[2])
+
+      // loop it over
+      loopTo(field[1], max)
+    } else {
+      loopTo(min, max)
+    }
   }
 
   /**
@@ -260,7 +271,7 @@ module.exports = function parseCron (expr, hasSeconds) {
    * @param {String} expr: The cron expression to parse
    */
   function parseExpr (expr) {
-    var schedule = { schedules: [{}], exceptions: [] },
+    var schedule = { schedules: [{}], exceptions: [], tz },
       components = expr.replace(/(\s)+/g, ' ').split(' '),
       field,
       f,

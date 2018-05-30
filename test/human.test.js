@@ -57,6 +57,9 @@ test('specific time', t => {
   t.deepEqual(parseText('at 05:05').schedules[0], { t: [t5] })
   t.deepEqual(parseText('at 5:05 am').schedules[0], { t: [t5] })
   t.deepEqual(parseText('at 06:00 PM').schedules[0], { t: [3600 * 18] })
+  // hour without minutes
+  t.deepEqual(parseText('at 5 am').schedules[0], { t: [3600 * 5] })
+  t.deepEqual(parseText('at 3 pm').schedules[0], { t: [3600 * 15] })
 })
 
 test('mixed', t => {

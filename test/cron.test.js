@@ -48,6 +48,8 @@ test('cron months', t => {
   t.deepEqual(parseCron('* * * * JAN *', true).schedules[0], { M: [1] })
   t.deepEqual(parseCron('* * * * JAN-MAR *', true).schedules[0], { M: [1, 2, 3] })
   t.deepEqual(parseCron('* * * * JAN,MAY,OCT *', true).schedules[0], { M: [1, 5, 10] })
+  // Wrapping months
+  t.deepEqual(parseCron('* * * * 11-2 *', true).schedules[0], { M: [11,12,1,2] })
 })
 
 test('cron years', t => {

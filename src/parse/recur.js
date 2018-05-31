@@ -415,36 +415,37 @@ module.exports = function parseRecur () {
       return this
     },
 
-    /**
-     * Custom modifier.
-     *
-     * recur().on(2011, 2012, 2013).custom('partOfDay');
-     *
-     * @api public
-     */
-    customModifier: function (id, vals) {
-      var custom = modifier[id]
-      if (!custom) throw new Error('Custom modifier ' + id + ' not recognized!')
+    // TODO :: Enable after I understand how it works
+    //  /**
+    //   * Custom modifier.
+    //   *
+    //   * recur().on(2011, 2012, 2013).custom('partOfDay');
+    //   *
+    //   * @api public
+    //   */
+    // customModifier: function (id, vals) {
+    //   var custom = later.modifier[id];
+    //   if(!custom) throw new Error('Custom modifier ' + id + ' not recognized!');
 
-      modifier = id
-      values = arguments[1] instanceof Array ? arguments[1] : [arguments[1]]
-      return this
-    },
+    //   modifier = id;
+    //   values = arguments[1] instanceof Array ? arguments[1] : [arguments[1]];
+    //   return this;
+    // },
 
-    /**
-     * Custom time period.
-     * HACK :: Check how this works !!
-     *
-     * recur().on(2011, 2012, 2013).customPeriod('partOfDay');
-     *
-     * @api public
-     */
-    customPeriod: function (custom) {
-      if (!custom) throw new Error('Custom time period ' + id + ' not recognized!')
+    // /**
+    // * Custom time period.
+    // *
+    // * recur().on(2011, 2012, 2013).customPeriod('partOfDay');
+    // *
+    // * @api public
+    // */
+    // customPeriod: function (id) {
+    //   var custom = later[id];
+    //   if(!custom) throw new Error('Custom time period ' + id + ' not recognized!');
 
-      add(id, custom.extent(new Date())[0], custom.extent(new Date())[1])
-      return this
-    },
+    //   add(id, custom.extent(new Date())[0], custom.extent(new Date())[1]);
+    //   return this;
+    // },
 
     /**
      * Modifies a recurring interval (specified using every) to start

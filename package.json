@@ -12,7 +12,7 @@
   "engines": {
     "node": ">=8"
   },
-  "homepage": "https://github.com/croqaz/later-again#readme",
+  "homepage": "https://github.com/croqaz/later-again",
   "keywords": [
     "later",
     "schedule"

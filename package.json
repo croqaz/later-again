@@ -28,7 +28,7 @@
     "format": "npx prettier --write src/*.js && npx standard --fix src/*.js",
     "test": "npx ava --fail-fast --verbose test/*.test.js"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
     "ava": "0.25.0",
     "lodash.range": "3.2.0",

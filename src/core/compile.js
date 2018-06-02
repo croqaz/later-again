@@ -5,39 +5,36 @@
  * Compiles a single schedule definition into a form
  * from which instances can be efficiently calculated from.
  */
-module.exports = function coreCompile(schedDef) {
-  var constraints = [],
-    constraintsLen = 0,
-    tickConstraint
+const constants = require('../constants')
 
-  for (var key in schedDef) {
-    var nameParts = key.split('_'),
-      name = nameParts[0],
-      mod = nameParts[1],
-      vals = schedDef[key],
-      constraint = mod ? later.modifier[mod](later[name], vals) : later[name]
+module.exports = function coreCompile(schedDef) {
+  const constraints = []
+  const constraintsLen = 0
+  let tickConstraint
+
+  for (let key in schedDef) {
+    const nameParts = key.split('_')
+    const name = nameParts[0]
+    const mod = nameParts[1]
+    const vals = schedDef[key]
+    const constraint = mod ? later.modifier[mod](later[name], vals) : later[name]
 
     constraints.push({ constraint: constraint, vals: vals })
     constraintsLen++
   }
 
-  console.log('schedDef=', schedDef)
-  console.log('constraints=', constraints)
-
   // sort constraints based on their range for best performance (we want to
   // always skip the largest block of time possible to find the next valid
   // value)
   constraints.sort(function(a, b) {
-    var ra = a.constraint.range,
-      rb = b.constraint.range
+    const ra = a.constraint.range
+    const rb = b.constraint.range
     return rb < ra ? -1 : rb > ra ? 1 : 0
   })
 
   // this is the smallest constraint, we use this one to tick the schedule when
   // finding multiple instances
   tickConstraint = constraints[constraintsLen - 1].constraint
-
-  console.log('tickConstraint=', tickConstraint)
 
   /**
    * Returns a function to use when comparing two dates. Encapsulates the
@@ -48,12 +45,8 @@ module.exports = function coreCompile(schedDef) {
    */
   function compareFn(dir) {
     return dir === 'next'
-      ? function(a, b) {
-          return a.getTime() > b.getTime()
-        }
-      : function(a, b) {
-          return b.getTime() > a.getTime()
-        }
+      ? (a, b) => a.getTime() > b.getTime()
+      : (a, b) => b.getTime() > a.getTime()
   }
 
   return {
@@ -65,17 +58,17 @@ module.exports = function coreCompile(schedDef) {
      * @param {Date} startDate: The first possible valid occurrence
      */
     start: function(dir, startDate) {
-      var next = startDate,
-        nextVal = later.array[dir],
-        maxAttempts = 1000,
-        done
+      const maxAttempts = 1000
+      const nextVal = later.array[dir]
+      let next = startDate
+      let done
 
       while (maxAttempts-- && !done && next) {
         done = true
 
         // verify all of the constraints in order since we want to make the
         // largest jumps possible to find the first valid value
-        for (var i = 0; i < constraintsLen; i++) {
+        for (let i = 0; i < constraintsLen; i++) {
           var constraint = constraints[i].constraint,
             curVal = constraint.val(next),
             extent = constraint.extent(next),
@@ -89,7 +82,7 @@ module.exports = function coreCompile(schedDef) {
         }
       }
 
-      if (next !== later.NEVER) {
+      if (next !== constants.NEVER) {
         next = dir === 'next' ? tickConstraint.start(next) : tickConstraint.end(next)
       }
 
@@ -104,11 +97,11 @@ module.exports = function coreCompile(schedDef) {
      * @param {Date} startDate: The first possible valid occurrence
      */
     end: function(dir, startDate) {
-      var result,
-        nextVal = later.array[dir + 'Invalid'],
-        compare = compareFn(dir)
+      const compare = compareFn(dir)
+      const nextVal = later.array[dir + 'Invalid']
+      let result
 
-      for (var i = constraintsLen - 1; i >= 0; i--) {
+      for (let i = constraintsLen - 1; i >= 0; i--) {
         var constraint = constraints[i].constraint,
           curVal = constraint.val(startDate),
           extent = constraint.extent(startDate),
@@ -136,8 +129,8 @@ module.exports = function coreCompile(schedDef) {
     tick: function(dir, date) {
       return new Date(
         dir === 'next'
-          ? tickConstraint.end(date).getTime() + later.SEC
-          : tickConstraint.start(date).getTime() - later.SEC
+          ? tickConstraint.end(date).getTime() + constants.SEC
+          : tickConstraint.start(date).getTime() - constants.SEC
       )
     },
 
@@ -146,8 +139,6 @@ module.exports = function coreCompile(schedDef) {
      *
      * @param {Date} date: The start date to tick from
      */
-    tickStart: function(date) {
-      return tickConstraint.start(date)
-    }
+    tickStart: tickConstraint.start
   }
 }

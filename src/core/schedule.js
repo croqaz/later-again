@@ -6,23 +6,25 @@
  * of the specified schedule.
  */
 const moment = require('moment-timezone')
+const coreCompile = require('./compile')
+const constants = require('../constants')
 
 module.exports = function coreSchedule(sched) {
   if (!sched) throw new Error('Missing schedule definition.')
   if (!sched.schedules) throw new Error('Definition must include at least one schedule.')
 
   // compile the schedule components
-  var schedules = [],
-    schedulesLen = sched.schedules.length,
-    exceptions = [],
-    exceptionsLen = sched.exceptions ? sched.exceptions.length : 0
+  const schedules = []
+  const schedulesLen = sched.schedules.length
+  const exceptions = []
+  const exceptionsLen = sched.exceptions ? sched.exceptions.length : 0
 
   for (let i = 0; i < schedulesLen; i++) {
-    schedules.push(later.compile(sched.schedules[i]))
+    schedules.push(coreCompile(sched.schedules[i]))
   }
 
   for (var j = 0; j < exceptionsLen; j++) {
-    exceptions.push(later.compile(sched.exceptions[j]))
+    exceptions.push(coreCompile(sched.exceptions[j]))
   }
 
   /**
@@ -36,18 +38,18 @@ module.exports = function coreSchedule(sched) {
    * @param {Bool} isRange: True to return ranges, false to return instances
    */
   function getInstances(dir, count, startDate, endDate, isRange) {
-    var compare = compareFn(dir), // encapsulates difference between directions
-      loopCount = count,
-      maxAttempts = 1000,
-      schedStarts = [],
-      exceptStarts = [],
-      next,
-      end,
-      results = [],
-      isForward = dir === 'next',
-      lastResult,
-      rStart = isForward ? 0 : 1,
-      rEnd = isForward ? 1 : 0
+    const compare = compareFn(dir) // encapsulates difference between directions
+    const loopCount = count
+    const maxAttempts = 1000
+    const schedStarts = []
+    const exceptStarts = []
+    const results = []
+    const isForward = dir === 'next'
+    const rStart = isForward ? 0 : 1
+    const rEnd = isForward ? 1 : 0
+    let next
+    let end
+    let lastResult
 
     startDate = startDate ? new Date(startDate) : new Date()
 
@@ -87,15 +89,14 @@ module.exports = function coreSchedule(sched) {
 
       // Step 5: Date is good, if range, find the end of the range and update start dates
       if (isRange) {
-        var maxEndDate = calcMaxEndDate(exceptStarts, compare)
+        const maxEndDate = calcMaxEndDate(exceptStarts, compare)
         end = calcEnd(dir, schedules, schedStarts, next, maxEndDate)
-        var r = isForward
-          ? [new Date(Math.max(startDate, next)), end ? new Date(endDate ? Math.min(end, endDate) : end) : undefined]
-          : [
-              end
-                ? new Date(endDate ? Math.max(endDate, end.getTime() + later.SEC) : end.getTime() + later.SEC)
-                : undefined,
-              new Date(Math.min(startDate, next.getTime() + later.SEC))
+        const r = isForward
+          ? [new Date(Math.max(startDate, next)), end ? new Date(endDate ? Math.min(end, endDate) : end) : null]
+          : [end
+              ? new Date(endDate ? Math.max(endDate, end.getTime() + constants.SEC) : end.getTime() + constants.SEC)
+              : null,
+              new Date(Math.min(startDate, next.getTime() + constants.SEC))
             ]
 
         // make sure start of this range doesn't overlap with the end of the
@@ -143,14 +144,14 @@ module.exports = function coreSchedule(sched) {
           : cleanDate(result)
     }
 
-    return results.length === 0 ? later.NEVER : count === 1 ? results[0] : results
+    return results.length === 0 ? constants.NEVER : count === 1 ? results[0] : results
   }
 
   function cleanDate(d) {
     if (d instanceof Date && !isNaN(d.valueOf())) {
       return new Date(d)
     }
-    return undefined
+    return null
   }
 
   /**
@@ -201,7 +202,7 @@ module.exports = function coreSchedule(sched) {
     for (let i = 0, len = schedArr.length; i < len; i++) {
       const nextStart = schedArr[i].start(dir, startDate)
       if (!nextStart) {
-        rangesArr[i] = later.NEVER
+        rangesArr[i] = constants.NEVER
       } else {
         rangesArr[i] = [nextStart, schedArr[i].end(dir, nextStart)]
       }
@@ -226,7 +227,7 @@ module.exports = function coreSchedule(sched) {
         var nextStart = schedArr[i].start(dir, startDate)
 
         if (!nextStart) {
-          rangesArr[i] = later.NEVER
+          rangesArr[i] = constants.NEVER
         } else {
           rangesArr[i] = [nextStart, schedArr[i].end(dir, nextStart)]
         }
@@ -396,7 +397,7 @@ module.exports = function coreSchedule(sched) {
      *
      * @param {Date} d: The date to check
      */
-    isValid: d => getInstances('next', 1, d, d) !== later.NEVER,
+    isValid: d => getInstances('next', 1, d, d) !== constants.NEVER,
 
     /**
      * Finds the next valid instance or instances of the current schedule,

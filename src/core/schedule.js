@@ -5,7 +5,9 @@
  * Returns an object to calculate future or previous occurrences
  * of the specified schedule.
  */
-module.exports = function schedule(sched) {
+const moment = require('moment-timezone')
+
+module.exports = function coreSchedule(sched) {
   if (!sched) throw new Error('Missing schedule definition.')
   if (!sched.schedules) throw new Error('Definition must include at least one schedule.')
 
@@ -15,7 +17,7 @@ module.exports = function schedule(sched) {
     exceptions = [],
     exceptionsLen = sched.exceptions ? sched.exceptions.length : 0
 
-  for (var i = 0; i < schedulesLen; i++) {
+  for (let i = 0; i < schedulesLen; i++) {
     schedules.push(later.compile(sched.schedules[i]))
   }
 
@@ -48,7 +50,20 @@ module.exports = function schedule(sched) {
       rEnd = isForward ? 1 : 0
 
     startDate = startDate ? new Date(startDate) : new Date()
-    if (!startDate || !startDate.getTime()) throw new Error('Invalid start date.')
+
+    const time = startDate.getTime()
+    if (!startDate || (!time && time !== 0)) throw new Error('Invalid start date.')
+
+    // NEW !!!
+    let offset = 0
+    if (sched.tz) {
+      offset = moment.tz.zone(sched.tz).parse(startDate)
+      startDate.setTime(startDate.getTime() - offset * 60 * 1000)
+      if (endDate) {
+        endDate.setTime(endDate.getTime() - offset * 60 * 1000)
+      }
+    }
+    // NEW !!!
 
     // Step 1: calculate the earliest start dates for each schedule and exception
     setNextStarts(dir, schedules, schedStarts, startDate)
@@ -108,8 +123,20 @@ module.exports = function schedule(sched) {
 
     // clean the dates that will be returned to remove any cached properties
     // that were added during the schedule process
-    for (var i = 0, len = results.length; i < len; i++) {
-      var result = results[i]
+    for (let i = 0, len = results.length; i < len; i++) {
+      let result = results[i]
+
+      // NEW !!!
+      if (sched.tz) {
+        // Sometimes an array is returned. We don't want that.
+        if (result instanceof Array) {
+          result = new Date(result[0])
+        }
+        offset = moment.tz.zone(sched.tz).parse(startDate)
+        result.setTime(result.getTime() + offset * 60 * 1000)
+      }
+      // NEW !!!
+
       results[i] =
         Object.prototype.toString.call(result) === '[object Array]'
           ? [cleanDate(result[0]), cleanDate(result[1])]
@@ -135,7 +162,7 @@ module.exports = function schedule(sched) {
    * @param {Date} startDate: Starts earlier than this date will be calculated
    */
   function setNextStarts(dir, schedArr, startsArr, startDate) {
-    for (var i = 0, len = schedArr.length; i < len; i++) {
+    for (let i = 0, len = schedArr.length; i < len; i++) {
       startsArr[i] = schedArr[i].start(dir, startDate)
     }
   }
@@ -151,9 +178,9 @@ module.exports = function schedule(sched) {
    * @param {Date} startDate: Starts earlier than this date will be calculated
    */
   function updateNextStarts(dir, schedArr, startsArr, startDate) {
-    var compare = compareFn(dir)
+    const compare = compareFn(dir)
 
-    for (var i = 0, len = schedArr.length; i < len; i++) {
+    for (let i = 0, len = schedArr.length; i < len; i++) {
       if (startsArr[i] && !compare(startsArr[i], startDate)) {
         startsArr[i] = schedArr[i].start(dir, startDate)
       }
@@ -171,11 +198,8 @@ module.exports = function schedule(sched) {
    * @param {Date} startDate: Starts earlier than this date will be calculated
    */
   function setRangeStarts(dir, schedArr, rangesArr, startDate) {
-    var compare = compareFn(dir)
-
-    for (var i = 0, len = schedArr.length; i < len; i++) {
-      var nextStart = schedArr[i].start(dir, startDate)
-
+    for (let i = 0, len = schedArr.length; i < len; i++) {
+      const nextStart = schedArr[i].start(dir, startDate)
       if (!nextStart) {
         rangesArr[i] = later.NEVER
       } else {
@@ -195,9 +219,9 @@ module.exports = function schedule(sched) {
    * @param {Date} startDate: Starts earlier than this date will be calculated
    */
   function updateRangeStarts(dir, schedArr, rangesArr, startDate) {
-    var compare = compareFn(dir)
+    const compare = compareFn(dir)
 
-    for (var i = 0, len = schedArr.length; i < len; i++) {
+    for (let i = 0, len = schedArr.length; i < len; i++) {
       if (rangesArr[i] && !compare(rangesArr[i][0], startDate)) {
         var nextStart = schedArr[i].start(dir, startDate)
 
@@ -220,7 +244,7 @@ module.exports = function schedule(sched) {
    * @param {Date} startDate: The date that should cause a schedule to tick
    */
   function tickStarts(dir, schedArr, startsArr, startDate) {
-    for (var i = 0, len = schedArr.length; i < len; i++) {
+    for (let i = 0, len = schedArr.length; i < len; i++) {
       if (startsArr[i] && startsArr[i].getTime() === startDate.getTime()) {
         startsArr[i] = schedArr[i].start(dir, schedArr[i].tick(dir, startDate))
       }
@@ -236,9 +260,9 @@ module.exports = function schedule(sched) {
    * @param {Date} minEndDate: The minimum end date to return
    */
   function getStart(schedArr, startsArr, startDate, minEndDate) {
-    var result
+    let result
 
-    for (var i = 0, len = startsArr.length; i < len; i++) {
+    for (let i = 0, len = startsArr.length; i < len; i++) {
       if (startsArr[i] && startsArr[i].getTime() === startDate.getTime()) {
         var start = schedArr[i].tickStart(startDate)
 
@@ -265,11 +289,11 @@ module.exports = function schedule(sched) {
    * @param {Date} startDate: The valid date for which the overlap will be found
    */
   function calcRangeOverlap(dir, rangesArr, startDate) {
-    var compare = compareFn(dir),
-      result
+    const compare = compareFn(dir)
+    let result
 
-    for (var i = 0, len = rangesArr.length; i < len; i++) {
-      var range = rangesArr[i]
+    for (let i = 0, len = rangesArr.length; i < len; i++) {
+      const range = rangesArr[i]
 
       if (range && !compare(range[0], startDate) && (!range[1] || compare(range[1], startDate))) {
         // startDate is in the middle of an exception range
@@ -290,9 +314,9 @@ module.exports = function schedule(sched) {
    * @param {Array} compare: The compare function to use to determine earliest
    */
   function calcMaxEndDate(exceptsArr, compare) {
-    var result
+    let result
 
-    for (var i = 0, len = exceptsArr.length; i < len; i++) {
+    for (let i = 0, len = exceptsArr.length; i < len; i++) {
       if (exceptsArr[i] && (!result || compare(result, exceptsArr[i][0]))) {
         result = exceptsArr[i][0]
       }
@@ -312,14 +336,14 @@ module.exports = function schedule(sched) {
    * @param {Date} maxEndDate: The latested possible end date or null for none
    */
   function calcEnd(dir, schedArr, startsArr, startDate, maxEndDate) {
-    var compare = compareFn(dir),
-      result
+    const compare = compareFn(dir)
+    let result
 
-    for (var i = 0, len = schedArr.length; i < len; i++) {
-      var start = startsArr[i]
+    for (let i = 0, len = schedArr.length; i < len; i++) {
+      const start = startsArr[i]
 
       if (start && start.getTime() === startDate.getTime()) {
-        var end = schedArr[i].end(dir, start)
+        const end = schedArr[i].end(dir, start)
 
         // if the end date is past the maxEndDate, just return the maxEndDate
         if (maxEndDate && (!end || compare(end, maxEndDate))) {
@@ -344,13 +368,7 @@ module.exports = function schedule(sched) {
    * @param {String} dir: The direction to use, either 'next' or 'prev'
    */
   function compareFn(dir) {
-    return dir === 'next'
-      ? function(a, b) {
-          return !b || a.getTime() > b.getTime()
-        }
-      : function(a, b) {
-          return !a || b.getTime() > a.getTime()
-        }
+    return dir === 'next' ? (a, b) => !b || a.getTime() > b.getTime() : (a, b) => !a || b.getTime() > a.getTime()
   }
 
   /**
@@ -361,9 +379,9 @@ module.exports = function schedule(sched) {
    * @param {Function} compare: The comparison function to use
    */
   function findNext(arr, compare) {
-    var next = arr[0]
+    let next = arr[0]
 
-    for (var i = 1, len = arr.length; i < len; i++) {
+    for (let i = 1, len = arr.length; i < len; i++) {
       if (arr[i] && compare(next, arr[i])) {
         next = arr[i]
       }
@@ -378,9 +396,7 @@ module.exports = function schedule(sched) {
      *
      * @param {Date} d: The date to check
      */
-    isValid: function(d) {
-      return getInstances('next', 1, d, d) !== later.NEVER
-    },
+    isValid: d => getInstances('next', 1, d, d) !== later.NEVER,
 
     /**
      * Finds the next valid instance or instances of the current schedule,
@@ -392,9 +408,7 @@ module.exports = function schedule(sched) {
      * @param {Date} startDate: The earliest a valid instance can occur
      * @param {Date} endDate: The latest a valid instance can occur
      */
-    next: function(count, startDate, endDate) {
-      return getInstances('next', count || 1, startDate, endDate)
-    },
+    next: (count, startDate, endDate) => getInstances('next', count || 1, startDate, endDate),
 
     /**
      * Finds the previous valid instance or instances of the current schedule,
@@ -406,9 +420,7 @@ module.exports = function schedule(sched) {
      * @param {Date} startDate: The earliest a valid instance can occur
      * @param {Date} endDate: The latest a valid instance can occur
      */
-    prev: function(count, startDate, endDate) {
-      return getInstances('prev', count || 1, startDate, endDate)
-    },
+    prev: (count, startDate, endDate) => getInstances('prev', count || 1, startDate, endDate),
 
     /**
      * Finds the next valid range or ranges of the current schedule,
@@ -420,9 +432,7 @@ module.exports = function schedule(sched) {
      * @param {Date} startDate: The earliest a valid range can occur
      * @param {Date} endDate: The latest a valid range can occur
      */
-    nextRange: function(count, startDate, endDate) {
-      return getInstances('next', count || 1, startDate, endDate, true)
-    },
+    nextRange: (count, startDate, endDate) => getInstances('next', count || 1, startDate, endDate, true),
 
     /**
      * Finds the previous valid range or ranges of the current schedule,
@@ -434,8 +444,6 @@ module.exports = function schedule(sched) {
      * @param {Date} startDate: The earliest a valid range can occur
      * @param {Date} endDate: The latest a valid range can occur
      */
-    prevRange: function(count, startDate, endDate) {
-      return getInstances('prev', count || 1, startDate, endDate, true)
-    }
+    prevRange: (count, startDate, endDate) => getInstances('prev', count || 1, startDate, endDate, true)
   }
 }

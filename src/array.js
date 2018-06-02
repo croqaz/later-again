@@ -12,7 +12,6 @@ function arraySort(arr, zeroIsLast) {
   arr.sort(function(a, b) {
     return +a - +b
   })
-
   if (zeroIsLast && arr[0] === 0) {
     arr.push(arr.shift())
   }
@@ -25,11 +24,11 @@ function arraySort(arr, zeroIsLast) {
  * Assumes the array has already been sorted.
  */
 function arrayNext(val, values, extent) {
-  var cur
   const zeroIsLargest = extent[0] !== 0
-  var nextIdx = 0
+  let nextIdx = 0
+  let cur
 
-  for (var i = values.length - 1; i > -1; --i) {
+  for (let i = values.length - 1; i > -1; --i) {
     cur = values[i]
 
     if (cur === val) {
@@ -57,9 +56,9 @@ function arrayNextInvalid(val, values, extent) {
   const [min, max] = extent
   const len = values.length
   const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0
-  var next = val
   var i = values.indexOf(val)
-  var start = next
+  var next = val
+  const start = next
 
   while (next === (values[i] || zeroVal)) {
     next++
@@ -87,12 +86,12 @@ function arrayNextInvalid(val, values, extent) {
  * Assumes the array has already been sorted.
  */
 function arrayPrev(val, values, extent) {
-  var cur
   const len = values.length
   const zeroIsLargest = extent[0] !== 0
-  var prevIdx = len - 1
+  let prevIdx = len - 1
+  let cur
 
-  for (var i = 0; i < len; i++) {
+  for (let i = 0; i < len; i++) {
     cur = values[i]
 
     if (cur === val) {
@@ -120,9 +119,9 @@ function arrayPrevInvalid(val, values, extent) {
   const [min, max] = extent
   const len = values.length
   const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0
-  var next = val
   var i = values.indexOf(val)
-  var start = next
+  var next = val
+  const start = next
 
   while (next === (values[i] || zeroVal)) {
     next--

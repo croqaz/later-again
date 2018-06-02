@@ -1,7 +1,7 @@
 import test from 'ava'
 import range from 'lodash.range'
-import parse from '../src/parse'
-const parseCron = parse.cron
+import later from '../'
+const parseCron = later.cron
 
 test('cron seconds', t => {
   t.deepEqual(parseCron('* * * * * *', true).schedules[0], { s: range(0, 60) })

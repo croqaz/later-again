@@ -1,7 +1,7 @@
 import test from 'ava'
 import range from 'lodash.range'
-import parse from '../src/parse'
-const parseText = parse.text
+import later from '../'
+const parseText = later.text
 
 test('every unit', t => {
   t.deepEqual(parseText('every second').schedules[0], { s: [0] })

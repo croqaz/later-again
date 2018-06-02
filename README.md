@@ -2,6 +2,7 @@
 # Later-again ⏰
 
   [![Standard Style Guide][style-img]][style-url]
+  [![API stability][stability-img]][stability-url]
 
 When I discovered the original [Later.js](https://github.com/bunkat/later) library, I was in awe. This is probably the best recurring schedules and calculating calendar occurrences ever. At least in the Node.js ecosystem.
 The amount of work refining this is incredible...
@@ -19,3 +20,5 @@ This repository tries to continue the work of the original library, using newer 
 
 [style-img]: https://img.shields.io/badge/code_style-standard-brightgreen.svg?style=flat-square
 [style-url]: https://standardjs.com
+[stability-img]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
+[stability-url]: https://nodejs.org/api/documentation.html#documentation_stability_index

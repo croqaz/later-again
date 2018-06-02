@@ -1,6 +1,6 @@
 const modifier = require('./src/modifier')
-const recur = require('./src/parseRecur')
-const cron = require('./src/parseCron')
-const text = require('./src/parseText')
+const recur = require('./src/parse/recur')
+const cron = require('./src/parse/cron')
+const text = require('./src/parse/text')
 
 module.exports = { recur, cron, text }

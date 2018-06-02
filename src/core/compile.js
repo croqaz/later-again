@@ -5,35 +5,34 @@
  * Compiles a single schedule definition into a form
  * from which instances can be efficiently calculated from.
  */
+const modifier = require('../modifier')
 const constants = require('../constants')
+const laterArray = require('../array')
 
 module.exports = function coreCompile(schedDef) {
   const constraints = []
-  const constraintsLen = 0
+  let constraintsLen = 0
   let tickConstraint
 
   for (let key in schedDef) {
-    const nameParts = key.split('_')
-    const name = nameParts[0]
-    const mod = nameParts[1]
+    const [name, mod] = key.split('_')
     const vals = schedDef[key]
-    const constraint = mod ? later.modifier[mod](later[name], vals) : later[name]
-
-    constraints.push({ constraint: constraint, vals: vals })
+    const constraint = mod ? modifier[mod](later[name], vals) : later[name]
+    constraints.push({ constraint, vals })
     constraintsLen++
   }
 
-  // sort constraints based on their range for best performance (we want to
-  // always skip the largest block of time possible to find the next valid
-  // value)
+  // sort constraints based on their range for best performance
+  // (we want to always skip the largest block of time possible
+  // to find the next valid value)
   constraints.sort(function(a, b) {
     const ra = a.constraint.range
     const rb = b.constraint.range
     return rb < ra ? -1 : rb > ra ? 1 : 0
   })
 
-  // this is the smallest constraint, we use this one to tick the schedule when
-  // finding multiple instances
+  // this is the smallest constraint, we use this one to tick the schedule
+  // when finding multiple instances
   tickConstraint = constraints[constraintsLen - 1].constraint
 
   /**
@@ -59,7 +58,7 @@ module.exports = function coreCompile(schedDef) {
      */
     start: function(dir, startDate) {
       const maxAttempts = 1000
-      const nextVal = later.array[dir]
+      const nextVal = laterArray[dir]
       let next = startDate
       let done
 
@@ -69,8 +68,8 @@ module.exports = function coreCompile(schedDef) {
         // verify all of the constraints in order since we want to make the
         // largest jumps possible to find the first valid value
         for (let i = 0; i < constraintsLen; i++) {
-          var constraint = constraints[i].constraint,
-            curVal = constraint.val(next),
+          const constraint = constraints[i].constraint
+          var curVal = constraint.val(next),
             extent = constraint.extent(next),
             newVal = nextVal(curVal, constraints[i].vals, extent)
 
@@ -102,8 +101,8 @@ module.exports = function coreCompile(schedDef) {
       let result
 
       for (let i = constraintsLen - 1; i >= 0; i--) {
-        var constraint = constraints[i].constraint,
-          curVal = constraint.val(startDate),
+        const constraint = constraints[i].constraint
+        var curVal = constraint.val(startDate),
           extent = constraint.extent(startDate),
           newVal = nextVal(curVal, constraints[i].vals, extent),
           next

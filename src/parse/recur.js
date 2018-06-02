@@ -195,7 +195,6 @@ module.exports = function parseRecur () {
         if (split.length < 3) split.push(0)
         values[i] = +split[0] * 3600 + +split[1] * 60 + +split[2]
       }
-
       add('t')
       return this
     },

@@ -16,7 +16,7 @@
  */
 module.exports = function parseCron (expr, hasSeconds, tz) {
   // Constant array to convert valid names to values
-  var NAMES = {
+  const NAMES = {
     JAN: 1,
     FEB: 2,
     MAR: 3,
@@ -39,7 +39,7 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
   }
 
   // Parsable replacements for common expressions
-  var REPLACEMENTS = {
+  const REPLACEMENTS = {
     '* * * * * *': '0/1 * * * * *',
     '@YEARLY': '0 0 1 1 *',
     '@ANNUALLY': '0 0 1 1 *',
@@ -51,7 +51,7 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
   }
 
   // Contains the index, min, and max for each of the constraints
-  var FIELDS = {
+  const FIELDS = {
     s: [0, 0, 59], // seconds
     m: [1, 0, 59], // minutes
     h: [2, 0, 23], // hours
@@ -80,8 +80,8 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
    * @param {Sched} sched: The schedule that will be cloned
    */
   function cloneSchedule (sched) {
-    var clone = {},
-      field
+    const clone = {}
+    let field
 
     for (field in sched) {
       if (field !== 'dc' && field !== 'd') {
@@ -153,8 +153,9 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
   }
 
   function addWeekday (s, curSched, value) {
-    var except1 = {},
-      except2 = {}
+    const except1 = {}
+    const except2 = {}
+
     if (value === 1) {
       // cron doesn't pass month boundaries, so if 1st is a
       // weekend then we need to use 2nd or 3rd instead
@@ -191,15 +192,14 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
    */
   function addRange (item, curSched, name, min, max, offset) {
     // parse range/x
-    var incSplit = item.split('/'),
-      inc = +incSplit[1],
-      range = incSplit[0]
+    const incSplit = item.split('/')
+    const range = incSplit[0]
+    const inc = +incSplit[1]
 
     // parse x-y or * or 0
     if (range !== '*' && range !== '0') {
-      var rangeSplit = range.split('-')
+      const rangeSplit = range.split('-')
       min = getValue(rangeSplit[0], offset, max)
-
       // fix for issue #13, range may be single digit
       max = getValue(rangeSplit[1], offset, max) || max
     }
@@ -218,10 +218,9 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
    * @param {Int} offset: The offset to apply to the cron value
    */
   function parse (item, s, name, min, max, offset) {
-    var value,
-      split,
-      schedules = s.schedules,
-      curSched = schedules[schedules.length - 1]
+    const schedules = s.schedules
+    const curSched = schedules[schedules.length - 1]
+    let value, split
 
     // L just means min - 1 (this also makes it work for any field)
     if (item === 'L') {
@@ -303,10 +302,10 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
    * @param {String} expr: The cron expression to prepare
    */
   function prepareExpr (expr) {
-    var prepared = expr.toUpperCase()
+    const prepared = expr.toUpperCase()
     return REPLACEMENTS[prepared] || prepared
   }
 
-  var e = prepareExpr(expr)
+  const e = prepareExpr(expr)
   return parseExpr(hasSeconds ? e : '0 ' + e)
 }

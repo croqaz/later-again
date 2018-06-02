@@ -162,9 +162,9 @@ module.exports = function parseText (str, tz) {
    * @param {TokenType} tokenType: The type of range values allowed
    */
   function parseThroughExpr (tokenType) {
-    var start = +parseTokenValue(tokenType),
-      end = checkAndParse(TOKENTYPES.through) ? +parseTokenValue(tokenType) : start,
-      nums = []
+    const start = +parseTokenValue(tokenType)
+    const end = checkAndParse(TOKENTYPES.through) ? +parseTokenValue(tokenType) : start
+    const nums = []
 
     for (var i = start; i <= end; i++) {
       nums.push(i)

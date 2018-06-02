@@ -56,9 +56,9 @@ function arrayNextInvalid(val, values, extent) {
   const [min, max] = extent
   const len = values.length
   const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0
-  var i = values.indexOf(val)
-  var next = val
-  const start = next
+  const start = val
+  let next = val
+  let i = values.indexOf(val)
 
   while (next === (values[i] || zeroVal)) {
     next++
@@ -72,7 +72,7 @@ function arrayNextInvalid(val, values, extent) {
     }
 
     if (next === start) {
-      return undefined
+      return
     }
   }
 
@@ -119,9 +119,9 @@ function arrayPrevInvalid(val, values, extent) {
   const [min, max] = extent
   const len = values.length
   const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0
-  var i = values.indexOf(val)
-  var next = val
-  const start = next
+  const start = val
+  let next = val
+  let i = values.indexOf(val)
 
   while (next === (values[i] || zeroVal)) {
     next--
@@ -136,7 +136,7 @@ function arrayPrevInvalid(val, values, extent) {
     }
 
     if (next === start) {
-      return undefined
+      return
     }
   }
 

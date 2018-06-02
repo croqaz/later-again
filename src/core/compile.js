@@ -97,7 +97,7 @@ module.exports = function coreCompile(schedDef) {
      */
     end: function(dir, startDate) {
       const compare = compareFn(dir)
-      const nextVal = later.array[dir + 'Invalid']
+      const nextVal = laterArray[dir + 'Invalid']
       let result
 
       for (let i = constraintsLen - 1; i >= 0; i--) {

@@ -151,7 +151,7 @@ module.exports = function coreSchedule(sched) {
     if (d instanceof Date && !isNaN(d.valueOf())) {
       return new Date(d)
     }
-    return null
+    return
   }
 
   /**

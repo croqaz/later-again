@@ -26,6 +26,7 @@ module.exports = {
    * @param {Date} d: The date to calculate the value of
    */
   val: function(d) {
+    const later = require('.')
     return d.t || (d.t = later.h.val(d) * 3600 + later.m.val(d) * 60 + later.s.val(d))
   },
 
@@ -51,18 +52,14 @@ module.exports = {
    *
    * @param {Date} d: The specified date
    */
-  start: function(d) {
-    return d
-  },
+  start: d => d,
 
   /**
    * Returns the specified date.
    *
    * @param {Date} d: The specified date
    */
-  end: function(d) {
-    return d
-  },
+  end: d => d,
 
   /**
    * Returns the start of the next instance of the time value indicated.
@@ -71,6 +68,7 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   next: function(d, val) {
+    const later = require('.')
     val = val > 86399 ? 0 : val
 
     var next = date.next(
@@ -104,6 +102,7 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   prev: function(d, val) {
+    const later = require('.')
     val = val > 86399 ? 86399 : val
 
     return date.next(later.Y.val(d), later.M.val(d), later.D.val(d) + (val >= this.val(d) ? -1 : 0), 0, 0, val)

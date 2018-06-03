@@ -5,6 +5,7 @@
  * Compiles a single schedule definition into a form
  * from which instances can be efficiently calculated from.
  */
+const units = require('../units')
 const modifier = require('../modifier')
 const constants = require('../constants')
 const laterArray = require('../array')
@@ -17,7 +18,7 @@ module.exports = function coreCompile(schedDef) {
   for (let key in schedDef) {
     const [name, mod] = key.split('_')
     const vals = schedDef[key]
-    const constraint = mod ? modifier[mod](later[name], vals) : later[name]
+    const constraint = mod ? modifier[mod](units[name], vals) : units[name]
     constraints.push({ constraint, vals })
     constraintsLen++
   }
@@ -57,9 +58,9 @@ module.exports = function coreCompile(schedDef) {
      * @param {Date} startDate: The first possible valid occurrence
      */
     start: function(dir, startDate) {
-      const maxAttempts = 1000
       const nextVal = laterArray[dir]
       let next = startDate
+      let maxAttempts = 1000
       let done
 
       while (maxAttempts-- && !done && next) {

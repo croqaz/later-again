@@ -5,6 +5,9 @@
  * Definition for a day of year constraint type.
  */
 const date = require('../date')
+const uYear = require('./year')
+const uMonth = require('./month')
+const uDay = require('./day')
 const constants = require('../constants')
 
 module.exports = {
@@ -25,7 +28,7 @@ module.exports = {
    * @param {Date} d: The date to calculate the value of
    */
   val: function(d) {
-    return d.dy || (d.dy = Math.ceil(1 + (later.D.start(d).getTime() - later.Y.start(d).getTime()) / constants.DAY))
+    return d.dy || (d.dy = Math.ceil(1 + (uDay.start(d).getTime() - uYear.start(d).getTime()) / constants.DAY))
   },
 
   /**
@@ -45,7 +48,7 @@ module.exports = {
    * @param {Date} d: The date indicating the month to find the extent of
    */
   extent: function(d) {
-    const year = later.Y.val(d)
+    const year = uYear.val(d)
     // shortcut on finding leap years since this function gets called a lot
     // works between 1901 and 2099
     return d.dyExtent || (d.dyExtent = [1, year % 4 ? 365 : 366])
@@ -57,7 +60,7 @@ module.exports = {
    * @param {Date} d: The specified date
    */
   start: function(d) {
-    return later.D.start(d)
+    return uDay.start(d)
   },
 
   /**
@@ -66,7 +69,7 @@ module.exports = {
    * @param {Date} d: The specified date
    */
   end: function(d) {
-    return later.D.end(d)
+    return uDay.end(d)
   },
 
   /**
@@ -77,12 +80,12 @@ module.exports = {
    */
   next: function(d, val) {
     val = val > this.extent(d)[1] ? 1 : val
-    var year = date.nextRollover(d, val, later.dy, later.Y),
+    var year = date.nextRollover(d, val, this, uYear),
       dyMax = this.extent(year)[1]
 
     val = val > dyMax ? 1 : val || dyMax
 
-    return date.next(later.Y.val(year), later.M.val(year), val)
+    return date.next(uYear.val(year), uMonth.val(year), val)
   },
 
   /**
@@ -92,11 +95,11 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   prev: function(d, val) {
-    var year = date.prevRollover(d, val, later.dy, later.Y),
+    var year = date.prevRollover(d, val, this, uYear),
       dyMax = this.extent(year)[1]
 
     val = val > dyMax ? dyMax : val || dyMax
 
-    return date.prev(later.Y.val(year), later.M.val(year), val)
+    return date.prev(uYear.val(year), uMonth.val(year), val)
   }
 }

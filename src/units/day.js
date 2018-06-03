@@ -7,7 +7,6 @@
 const date = require('../date')
 const uYear = require('./year')
 const uMonth = require('./month')
-const uDayYear = require('./dayofyear')
 const constants = require('../constants')
 
 module.exports = {
@@ -28,7 +27,7 @@ module.exports = {
    * @param {Date} d: The date to calculate the value of
    */
   val: function(d) {
-    return d.D || (d.D = Date.prototype.getUTCDate.call(d))
+    return d.D || (d.D = d.getUTCDate())
   },
 
   /**
@@ -49,12 +48,13 @@ module.exports = {
    */
   extent: function(d) {
     if (d.DExtent) return d.DExtent
+    const uDayYear = require('./dayofyear')
 
     const month = uMonth.val(d)
     let max = constants.DAYS_IN_MONTH[month - 1]
 
     if (month === 2 && uDayYear.extent(d)[1] === 366) {
-      max += 1
+      max = max + 1
     }
 
     return (d.DExtent = [1, max])

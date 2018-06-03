@@ -25,7 +25,7 @@ module.exports = {
    * @param {Date} d: The date to calculate the value of
    */
   val: function(d) {
-    return d.dw || (d.dw = Date.prototype.getUTCDay.call(d) + 1)
+    return d.dw || (d.dw = d.getUTCDay(d) + 1)
   },
 
   /**

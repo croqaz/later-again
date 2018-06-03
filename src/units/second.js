@@ -4,8 +4,12 @@
  *
  * Definition for a second constraint type.
  */
-const later = require('.')
 const date = require('../date')
+const uYear = require('./year')
+const uMonth = require('./month')
+const uDay = require('./day')
+const uHour = require('./hour')
+const uMinut = require('./minute')
 const constants = require('../constants')
 
 module.exports = {
@@ -67,9 +71,9 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   next: function(d, val) {
-    var s = this.val(d),
-      inc = val > 59 ? 60 - s : val <= s ? 60 - s + val : val - s,
-      next = new Date(d.getTime() + inc * constants.SEC)
+    const s = this.val(d)
+    const inc = val > 59 ? 60 - s : val <= s ? 60 - s + val : val - s
+    const next = new Date(d.getTime() + inc * constants.SEC)
     return next
   },
 
@@ -83,11 +87,11 @@ module.exports = {
     val = val > 59 ? 59 : val
 
     return date.prev(
-      later.Y.val(d),
-      later.M.val(d),
-      later.D.val(d),
-      later.h.val(d),
-      later.m.val(d) + (val >= this.val(d) ? -1 : 0),
+      uYear.val(d),
+      uMonth.val(d),
+      uDay.val(d),
+      uHour.val(d),
+      uMinut.val(d) + (val >= this.val(d) ? -1 : 0),
       val
     )
   }

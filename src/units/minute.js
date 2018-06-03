@@ -9,7 +9,6 @@ const uYear = require('./year')
 const uMonth = require('./month')
 const uDay = require('./day')
 const uHour = require('./hour')
-const uSecn = require('./second')
 const constants = require('../constants')
 
 module.exports = {
@@ -81,10 +80,11 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   next: function(d, val) {
-    var m = this.val(d),
-      s = uSecn.val(d),
-      inc = val > 59 ? 60 - m : val <= m ? 60 - m + val : val - m,
-      next = new Date(d.getTime() + inc * constants.MIN - s * constants.SEC)
+    const uSecond = require('./second')
+    const m = this.val(d)
+    const s = uSecond.val(d)
+    const inc = val > 59 ? 60 - m : val <= m ? 60 - m + val : val - m
+    const next = new Date(d.getTime() + inc * constants.MIN - s * constants.SEC)
     return next
   },
 

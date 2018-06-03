@@ -7,6 +7,10 @@
  * starting on Sunday.
  */
 const date = require('../date')
+const uYear = require('./year')
+const uMonth = require('./month')
+const uDay = require('./day')
+const uDayOfWeek = require('./dayofweek')
 const constants = require('../constants')
 
 module.exports = {
@@ -27,7 +31,7 @@ module.exports = {
    * @param {Date} d: The date to calculate the value of
    */
   val: function(d) {
-    return d.wm || (d.wm = (later.D.val(d) + (later.dw.val(later.M.start(d)) - 1) + (7 - later.dw.val(d))) / 7)
+    return d.wm || (d.wm = (uDay.val(d) + (uDayOfWeek.val(uMonth.start(d)) - 1) + (7 - uDayOfWeek.val(d))) / 7)
   },
 
   /**
@@ -51,7 +55,7 @@ module.exports = {
       d.wmExtent ||
       (d.wmExtent = [
         1,
-        (later.D.extent(d)[1] + (later.dw.val(later.M.start(d)) - 1) + (7 - later.dw.val(later.M.end(d)))) / 7
+        (uDay.extent(d)[1] + (uDayOfWeek.val(uMonth.start(d)) - 1) + (7 - uDayOfWeek.val(uMonth.end(d)))) / 7
       ])
     )
   },
@@ -64,7 +68,7 @@ module.exports = {
   start: function(d) {
     return (
       d.wmStart ||
-      (d.wmStart = date.next(later.Y.val(d), later.M.val(d), Math.max(later.D.val(d) - later.dw.val(d) + 1, 1)))
+      (d.wmStart = date.next(uYear.val(d), uMonth.val(d), Math.max(uDay.val(d) - uDayOfWeek.val(d) + 1, 1)))
     )
   },
 
@@ -77,9 +81,9 @@ module.exports = {
     return (
       d.wmEnd ||
       (d.wmEnd = date.prev(
-        later.Y.val(d),
-        later.M.val(d),
-        Math.min(later.D.val(d) + (7 - later.dw.val(d)), later.D.extent(d)[1])
+        uYear.val(d),
+        uMonth.val(d),
+        Math.min(uDay.val(d) + (7 - uDayOfWeek.val(d)), uDay.extent(d)[1])
       ))
     )
   },
@@ -95,16 +99,16 @@ module.exports = {
   next: function(d, val) {
     val = val > this.extent(d)[1] ? 1 : val
 
-    var month = date.nextRollover(d, val, later.wm, later.M),
+    var month = date.nextRollover(d, val, this, uMonth),
       wmMax = this.extent(month)[1]
 
     val = val > wmMax ? 1 : val || wmMax
 
     // jump to the Sunday of the desired week, set to 1st of month for week 1
     return date.next(
-      later.Y.val(month),
-      later.M.val(month),
-      Math.max(1, (val - 1) * 7 - (later.dw.val(month) - 2))
+      uYear.val(month),
+      uMonth.val(month),
+      Math.max(1, (val - 1) * 7 - (uDayOfWeek.val(month) - 2))
     )
   },
 
@@ -117,14 +121,14 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   prev: function(d, val) {
-    var month = date.prevRollover(d, val, later.wm, later.M),
+    var month = date.prevRollover(d, val, this, uMonth),
       wmMax = this.extent(month)[1]
 
     val = val > wmMax ? wmMax : val || wmMax
 
     // jump to the end of Saturday of the desired week
     return this.end(
-      date.next(later.Y.val(month), later.M.val(month), Math.max(1, (val - 1) * 7 - (later.dw.val(month) - 2)))
+      date.next(uYear.val(month), uMonth.val(month), Math.max(1, (val - 1) * 7 - (uDayOfWeek.val(month) - 2)))
     )
   }
 }

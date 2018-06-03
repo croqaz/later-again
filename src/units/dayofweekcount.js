@@ -6,6 +6,9 @@
  * to specify schedules like '2nd Tuesday of every month'.
  */
 const date = require('../date')
+const uYear = require('./year')
+const uMonth = require('./month')
+const uDay = require('./day')
 const constants = require('../constants')
 
 module.exports = {
@@ -26,7 +29,7 @@ module.exports = {
    * @param {Date} d: The date to calculate the value of
    */
   val: function(d) {
-    return d.dc || (d.dc = Math.floor((later.D.val(d) - 1) / 7) + 1)
+    return d.dc || (d.dc = Math.floor((uDay.val(d) - 1) / 7) + 1)
   },
 
   /**
@@ -36,7 +39,7 @@ module.exports = {
    * @param {Integer} val: The value to validate
    */
   isValid: function(d, val) {
-    return this.val(d) === val || (val === 0 && later.D.val(d) > later.D.extent(d)[1] - 7)
+    return this.val(d) === val || (val === 0 && uDay.val(d) > uDay.extent(d)[1] - 7)
   },
 
   /**
@@ -46,7 +49,7 @@ module.exports = {
    * @param {Date} d: The date indicating the month to find the extent of
    */
   extent: function(d) {
-    return d.dcExtent || (d.dcExtent = [1, Math.ceil(later.D.extent(d)[1] / 7)])
+    return d.dcExtent || (d.dcExtent = [1, Math.ceil(uDay.extent(d)[1] / 7)])
   },
 
   /**
@@ -58,7 +61,7 @@ module.exports = {
   start: function(d) {
     return (
       d.dcStart ||
-      (d.dcStart = date.next(later.Y.val(d), later.M.val(d), Math.max(1, (this.val(d) - 1) * 7 + 1 || 1)))
+      (d.dcStart = date.next(uYear.val(d), uMonth.val(d), Math.max(1, (this.val(d) - 1) * 7 + 1 || 1)))
     )
   },
 
@@ -71,7 +74,7 @@ module.exports = {
   end: function(d) {
     return (
       d.dcEnd ||
-      (d.dcEnd = date.prev(later.Y.val(d), later.M.val(d), Math.min(this.val(d) * 7, later.D.extent(d)[1])))
+      (d.dcEnd = date.prev(uYear.val(d), uMonth.val(d), Math.min(this.val(d) * 7, uDay.extent(d)[1])))
     )
   },
 
@@ -83,24 +86,24 @@ module.exports = {
    */
   next: function(d, val) {
     val = val > this.extent(d)[1] ? 1 : val
-    var month = date.nextRollover(d, val, this, later.M),
+    var month = date.nextRollover(d, val, this, uMonth),
       dcMax = this.extent(month)[1]
 
     val = val > dcMax ? 1 : val
 
     var next = date.next(
-      later.Y.val(month),
-      later.M.val(month),
-      val === 0 ? later.D.extent(month)[1] - 6 : 1 + 7 * (val - 1)
+      uYear.val(month),
+      uMonth.val(month),
+      val === 0 ? uDay.extent(month)[1] - 6 : 1 + 7 * (val - 1)
     )
 
     if (next.getTime() <= d.getTime()) {
-      month = later.M.next(d, later.M.val(d) + 1)
+      month = uMonth.next(d, uMonth.val(d) + 1)
 
       return date.next(
-        later.Y.val(month),
-        later.M.val(month),
-        val === 0 ? later.D.extent(month)[1] - 6 : 1 + 7 * (val - 1)
+        uYear.val(month),
+        uMonth.val(month),
+        val === 0 ? uDay.extent(month)[1] - 6 : 1 + 7 * (val - 1)
       )
     }
 
@@ -114,11 +117,11 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   prev: function(d, val) {
-    var month = date.prevRollover(d, val, this, later.M),
+    var month = date.prevRollover(d, val, this, uMonth),
       dcMax = this.extent(month)[1]
 
     val = val > dcMax ? dcMax : val || dcMax
 
-    return this.end(date.prev(later.Y.val(month), later.M.val(month), 1 + 7 * (val - 1)))
+    return this.end(date.prev(uYear.val(month), uMonth.val(month), 1 + 7 * (val - 1)))
   }
 }

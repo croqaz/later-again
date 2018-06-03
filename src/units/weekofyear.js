@@ -6,6 +6,10 @@
  * ISO 8601 see http://en.wikipedia.org/wiki/ISO_week_date.
  */
 const date = require('../date')
+const uYear = require('./year')
+const uMonth = require('./month')
+const uDay = require('./day')
+const uDayOfWeek = require('./dayofweek')
 const constants = require('../constants')
 
 module.exports = {
@@ -29,8 +33,8 @@ module.exports = {
     if (d.wy) return d.wy
 
     // move to the Thursday in the target week and find Thurs of target year
-    var wThur = later.dw.next(this.start(d), 5),
-      YThur = later.dw.next(later.Y.prev(wThur, later.Y.val(wThur) - 1), 5)
+    var wThur = uDayOfWeek.next(this.start(d), 5),
+      YThur = uDayOfWeek.next(uYear.prev(wThur, uYear.val(wThur) - 1), 5)
 
     // caculate the difference between the two dates in weeks
     return (d.wy = 1 + Math.ceil((wThur.getTime() - YThur.getTime()) / constants.WEEK))
@@ -55,9 +59,9 @@ module.exports = {
     if (d.wyExtent) return d.wyExtent
 
     // go to start of ISO week to get to the right year
-    var year = later.dw.next(this.start(d), 5),
-      dwFirst = later.dw.val(later.Y.start(year)),
-      dwLast = later.dw.val(later.Y.end(year))
+    var year = uDayOfWeek.next(this.start(d), 5),
+      dwFirst = uDayOfWeek.val(uYear.start(year)),
+      dwLast = uDayOfWeek.val(uYear.end(year))
 
     return (d.wyExtent = [1, dwFirst === 5 || dwLast === 5 ? 53 : 52])
   },
@@ -71,10 +75,10 @@ module.exports = {
     return (
       d.wyStart ||
       (d.wyStart = date.next(
-        later.Y.val(d),
-        later.M.val(d),
+        uYear.val(d),
+        uMonth.val(d),
         // jump to the Monday of the current week
-        later.D.val(d) - (later.dw.val(d) > 1 ? later.dw.val(d) - 2 : 6)
+        uDay.val(d) - (uDayOfWeek.val(d) > 1 ? uDayOfWeek.val(d) - 2 : 6)
       ))
     )
   },
@@ -88,10 +92,10 @@ module.exports = {
     return (
       d.wyEnd ||
       (d.wyEnd = date.prev(
-        later.Y.val(d),
-        later.M.val(d),
+        uYear.val(d),
+        uMonth.val(d),
         // jump to the Saturday of the current week
-        later.D.val(d) + (later.dw.val(d) > 1 ? 8 - later.dw.val(d) : 0)
+        uDay.val(d) + (uDayOfWeek.val(d) > 1 ? 8 - uDayOfWeek.val(d) : 0)
       ))
     )
   },
@@ -105,12 +109,12 @@ module.exports = {
   next: function(d, val) {
     val = val > this.extent(d)[1] ? 1 : val
 
-    var wyThur = later.dw.next(this.start(d), 5),
-      year = date.nextRollover(wyThur, val, later.wy, later.Y)
+    var wyThur = uDayOfWeek.next(this.start(d), 5),
+      year = date.nextRollover(wyThur, val, this, uYear)
 
     // handle case where 1st of year is last week of previous month
     if (this.val(year) !== 1) {
-      year = later.dw.next(year, 2)
+      year = uDayOfWeek.next(year, 2)
     }
 
     var wyMax = this.extent(year)[1],
@@ -118,7 +122,7 @@ module.exports = {
 
     val = val > wyMax ? 1 : val || wyMax
 
-    return date.next(later.Y.val(wyStart), later.M.val(wyStart), later.D.val(wyStart) + 7 * (val - 1))
+    return date.next(uYear.val(wyStart), uMonth.val(wyStart), uDay.val(wyStart) + 7 * (val - 1))
   },
 
   /**
@@ -128,12 +132,12 @@ module.exports = {
    * @param {int} val: The desired value, must be within extent
    */
   prev: function(d, val) {
-    var wyThur = later.dw.next(this.start(d), 5),
-      year = date.prevRollover(wyThur, val, later.wy, later.Y)
+    var wyThur = uDayOfWeek.next(this.start(d), 5),
+      year = date.prevRollover(wyThur, val, this, uYear)
 
     // handle case where 1st of year is last week of previous month
     if (this.val(year) !== 1) {
-      year = later.dw.next(year, 2)
+      year = uDayOfWeek.next(year, 2)
     }
 
     var wyMax = this.extent(year)[1],
@@ -141,6 +145,6 @@ module.exports = {
 
     val = val > wyMax ? wyMax : val || wyMax
 
-    return this.end(date.next(later.Y.val(wyEnd), later.M.val(wyEnd), later.D.val(wyEnd) + 7 * (val - 1)))
+    return this.end(date.next(uYear.val(wyEnd), uMonth.val(wyEnd), uDay.val(wyEnd) + 7 * (val - 1)))
   }
 }

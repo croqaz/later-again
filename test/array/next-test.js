@@ -1,5 +1,6 @@
 const should = require('should')
-const { arrayNext } = require('../../src/array')
+const array = require('../../src/array')
+const arrayNext = array.next
 
 describe('Later.array.next', function () {
   it('should exist', function () {

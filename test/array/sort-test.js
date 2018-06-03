@@ -1,16 +1,16 @@
 const should = require('should')
-const { arraySort } = require('../../src/array')
+const array = require('../../src/array')
 
 describe('Later.array.sort', function () {
   it('should exist', function () {
-    should.exist(arraySort)
+    should.exist(array.sort)
   })
 
   it('should not modify arrays that are already sorted', function () {
     var arr = [1, 2, 3, 4, 5],
       expected = [1, 2, 3, 4, 5]
 
-    arraySort(arr)
+    array.sort(arr)
     arr.should.eql(expected)
   })
 
@@ -18,7 +18,7 @@ describe('Later.array.sort', function () {
     var arr = [6, 9, 2, 4, 3],
       expected = [2, 3, 4, 6, 9]
 
-    arraySort(arr)
+    array.sort(arr)
     arr.should.eql(expected)
   })
 
@@ -26,7 +26,7 @@ describe('Later.array.sort', function () {
     var arr = [6, 9, 2, 0, 4, 3],
       expected = [0, 2, 3, 4, 6, 9]
 
-    arraySort(arr)
+    array.sort(arr)
     arr.should.eql(expected)
   })
 
@@ -34,7 +34,7 @@ describe('Later.array.sort', function () {
     var arr = [6, 9, 2, 0, 4, 3],
       expected = [2, 3, 4, 6, 9, 0]
 
-    arraySort(arr, true)
+    array.sort(arr, true)
     arr.should.eql(expected)
   })
 })

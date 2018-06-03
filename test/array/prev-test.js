@@ -1,5 +1,6 @@
 const should = require('should')
-const { arrayPrev } = require('../../src/array')
+const array = require('../../src/array')
+const arrayPrev = array.prev
 
 describe('Later.array.prev', function () {
   it('should exist', function () {

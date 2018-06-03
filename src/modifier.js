@@ -79,7 +79,6 @@ modifier.before = modifier.b = function(constraint, values) {
  * @param {Constraint} constraint: The constraint to be modified
  * @param {Integer} value: The starting value of the after constraint
  */
-
 modifier.after = modifier.a = function(constraint, values) {
   const value = values[0]
 

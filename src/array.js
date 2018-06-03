@@ -143,4 +143,10 @@ function arrayPrevInvalid(val, values, extent) {
   return next
 }
 
-module.exports = { arraySort, arrayNext, arrayNextInvalid, arrayPrev, arrayPrevInvalid }
+module.exports = {
+  sort: arraySort,
+  next: arrayNext,
+  prev: arrayPrev,
+  nextInvalid: arrayNextInvalid,
+  prevInvalid: arrayPrevInvalid
+}

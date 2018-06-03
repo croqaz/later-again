@@ -1,5 +1,6 @@
 const should = require('should')
-const { arrayPrevInvalid } = require('../../src/array')
+const array = require('../../src/array')
+const arrayPrevInvalid = array.prevInvalid
 
 describe('Later.array.prevInvalid', function () {
   it('should exist', function () {

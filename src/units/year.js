@@ -1,6 +1,7 @@
 /**
  * Year Constraint (Y)
  * (c) 2013 Bill, BunKat LLC.
+ * (c) 2018 Cristi Constantin
  *
  * Definition for a year constraint type.
  */

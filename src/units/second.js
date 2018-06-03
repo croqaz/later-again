@@ -1,6 +1,7 @@
 /**
  * Second Constraint (s)
  * (c) 2013 Bill, BunKat LLC.
+ * (c) 2018 Cristi Constantin
  *
  * Definition for a second constraint type.
  */

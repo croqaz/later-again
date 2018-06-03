@@ -1,6 +1,7 @@
 /**
  * Time Constraint (t)
  * (c) 2013 Bill, BunKat LLC.
+ * (c) 2018 Cristi Constantin
  *
  * Definition for a time of day constraint type. Stored as number of seconds
  * since midnight to simplify calculations.

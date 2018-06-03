@@ -1,6 +1,7 @@
 /**
  * Minute Constraint (m)
  * (c) 2013 Bill, BunKat LLC.
+ * (c) 2018 Cristi Constantin
  *
  * Definition for a minute constraint type.
  */

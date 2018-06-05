@@ -30,16 +30,6 @@ module.exports = {
   },
 
   /**
-   * Returns true if the val is valid for the date specified.
-   *
-   * @param {Date} d: The date to check the value on
-   * @param {Integer} val: The value to validate
-   */
-  isValid: function(d, val) {
-    return this.val(d) === val
-  },
-
-  /**
    * The minimum and maximum valid values for the year constraint.
    * If max is past 2099, later.D.extent must be fixed to calculate leap years
    * correctly.
@@ -48,41 +38,57 @@ module.exports = {
     return [1970, 2099]
   },
 
-  /**
-   * The start of the year of the specified date.
-   *
-   * @param {Date} d: The specified date
-   */
-  start: function(d) {
-    return d.YStart || (d.YStart = date.next(this.val(d)))
-  },
+  isValid,
+  start,
+  end,
+  next,
+  prev
+}
 
-  /**
-   * The end of the year of the specified date.
-   *
-   * @param {Date} d: The specified date
-   */
-  end: function(d) {
-    return d.YEnd || (d.YEnd = date.prev(this.val(d)))
-  },
+/**
+ * Returns true if the val is valid for the date specified.
+ *
+ * @param {Date} d: The date to check the value on
+ * @param {Integer} val: The value to validate
+ */
+function isValid(d, val) {
+  return module.exports.val(d) === val
+}
 
-  /**
-   * Returns the start of the next instance of the year value indicated.
-   *
-   * @param {Date} d: The starting date
-   * @param {int} val: The desired value, must be within extent
-   */
-  next: function(d, val) {
-    return val > this.val(d) && val <= this.extent()[1] ? date.next(val) : constants.NEVER
-  },
+/**
+ * The start of the year of the specified date.
+ *
+ * @param {Date} d: The specified date
+ */
+function start(d) {
+  return d.YStart || (d.YStart = date.next(module.exports.val(d)))
+}
 
-  /**
-   * Returns the end of the previous instance of the year value indicated.
-   *
-   * @param {Date} d: The starting date
-   * @param {int} val: The desired value, must be within extent
-   */
-  prev: function(d, val) {
-    return val < this.val(d) && val >= this.extent()[0] ? date.prev(val) : constants.NEVER
-  }
+/**
+ * The end of the year of the specified date.
+ *
+ * @param {Date} d: The specified date
+ */
+function end(d) {
+  return d.YEnd || (d.YEnd = date.prev(module.exports.val(d)))
+}
+
+/**
+ * Returns the start of the next instance of the year value indicated.
+ *
+ * @param {Date} d: The starting date
+ * @param {int} val: The desired value, must be within extent
+ */
+function next(d, val) {
+  return val > module.exports.val(d) && val <= module.exports.extent()[1] ? date.next(val) : constants.NEVER
+}
+
+/**
+ * Returns the end of the previous instance of the year value indicated.
+ *
+ * @param {Date} d: The starting date
+ * @param {int} val: The desired value, must be within extent
+ */
+function prev(d, val) {
+  return val < module.exports.val(d) && val >= module.exports.extent()[0] ? date.prev(val) : constants.NEVER
 }

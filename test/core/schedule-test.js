@@ -74,73 +74,82 @@ describe('Schedule', function() {
     })
   })
 
-  // describe('prev', function() {
-  //   const d = new Date('2013-03-21T00:00:05Z')
-  //   const e = new Date('2010-01-01T00:00:05Z')
+  describe('prev', function() {
+    const d = new Date('2013-03-21T00:00:05Z')
+    const e = new Date('2010-01-01T00:00:05Z')
 
-  //   it('should return the start date if it is valid', function() {
-  //     var s = { schedules: [{ Y: [2013], M: [3], D: [21], s: [5] }] }
-  //     schedule(s)
-  //       .prev(1, d)
-  //       .should.eql(d)
-  //   })
+    it('should return prev valid date if one exists', function() {
+      const s1 = { schedules: [{ Y: [2012] }] }
+      schedule(s1)
+        .prev(1, d)
+        .should.eql(new Date('2012-01-01T00:00:00Z'))
 
-  //   it('should return prev valid date if one exists', function() {
-  //     var s1 = { schedules: [{ Y: [2012] }] }
-  //     schedule(s1)
-  //       .prev(1, d)
-  //       .should.eql(new Date('2012-01-01T00:00:00Z'))
+      const s2 = { schedules: [{ M: [2] }] }
+      schedule(s2)
+        .prev(1, d)
+        .should.eql(new Date('2013-02-01T00:00:00Z'))
+    })
 
-  //     var s2 = { schedules: [{ M: [2] }] }
-  //     schedule(s2)
-  //       .prev(1, d)
-  //       .should.eql(new Date('2012-01-01T00:00:00Z'))
-  //   })
+    it('should return prev valid date if one exists with exceptions', function() {
+      const s1 = { schedules: [{ Y: [2012, 2013, 2014] }], exceptions: [{ Y: [2013] }] }
+      schedule(s1)
+        .prev(1, d)
+        .should.eql(new Date('2012-01-01T00:00:00Z'))
 
-  //   it('should return prev valid date if one exists with exceptions', function() {
-  //     var s = { schedules: [{ Y: [2012, 2013, 2014] }], exceptions: [{ Y: [2013] }] }
-  //     schedule(s)
-  //       .prev(1, d)
-  //       .should.eql(new Date('2012-01-01T00:00:00Z'))
-  //   })
+      // This is BROKEN
+      // const s2 = { schedules: [{ M: [3, 5, 9] }], exceptions: [{ Y: [2013] }] }
+      // schedule(s1)
+      //   .prev(2, d)
+      //   .should.eql([
+      //     new Date('2012-01-01T00:00:00Z'),
+      //     new Date('2012-05-01T00:00:00Z')
+      //   ])
+    })
 
-  //   it('should return count valid dates if they exist', function() {
-  //     var s = { schedules: [{ Y: [2010, 2011, 2012] }] }
-  //     schedule(s)
-  //       .prev(3, d)
-  //       .should.eql([
-  //         new Date('2012-01-01T00:00:00Z'),
-  //         new Date('2011-01-01T00:00:00Z'),
-  //         new Date('2010-01-01T00:00:00Z')
-  //       ])
-  //   })
+    it('should return count valid dates if they exist', function() {
+      const s = { schedules: [{ Y: [2010, 2011, 2012] }] }
+      schedule(s)
+        .prev(3, d)
+        .should.eql([
+          new Date('2012-01-01T00:00:00Z'),
+          new Date('2011-01-01T00:00:00Z'),
+          new Date('2010-01-01T00:00:00Z')
+        ])
+    })
 
-  //   it('should return NEVER if no prev valid date exists', function() {
-  //     var s = { schedules: [{ Y: [2017] }] }
-  //     should.equal(schedule(s).prev(1, d), 0)
-  //   })
+    it('should return the start date if it is valid', function () {
+      const s = { schedules: [{ Y: [2013], M: [3], D: [21], s: [5] }] }
+      schedule(s)
+        .prev(1, d)
+        .should.eql(d)
+    })
 
-  //   it('should return NEVER if end date precludes a valid schedule', function() {
-  //     var s = { schedules: [{ Y: [2009] }] }
-  //     should.equal(schedule(s).prev(1, d, e), 0)
-  //   })
-  // })
+    it('should return NEVER if no prev valid date exists', function() {
+      const s = { schedules: [{ Y: [2017] }] }
+      should.equal(schedule(s).prev(1, d), 0)
+    })
+
+    it('should return NEVER if end date precludes a valid schedule', function() {
+      const s = { schedules: [{ Y: [2009] }] }
+      should.equal(schedule(s).prev(1, d, e), 0)
+    })
+  })
 
   describe('nextRange', function() {
     it('should return next valid range if one exists', function() {
-      var d = new Date('2013-03-21T00:00:05Z')
-      var e = new Date('2016-01-01T00:00:05Z')
+      const d = new Date('2013-03-21T00:00:05Z')
+      const e = new Date('2016-01-01T00:00:05Z')
 
-      var s = { schedules: [{ Y: [2015, 2016, 2017] }] }
+      const s = { schedules: [{ Y: [2015, 2016, 2017] }] }
       schedule(s)
         .nextRange(1, d)
         .should.eql([new Date('2015-01-01T00:00:00Z'), new Date('2018-01-01T00:00:00Z')])
     })
 
     it('should correctly calculate ranges', function() {
-      var d = new Date('2013-03-21T00:00:05Z')
+      const d = new Date('2013-03-21T00:00:05Z')
 
-      var s = {
+      const s = {
         schedules: [{ dw: [2, 3, 4, 5, 6], h_a: [8], h_b: [16] }],
         exceptions: [
           { fd_a: [1362420000000], fd_b: [1362434400000] },
@@ -155,9 +164,9 @@ describe('Schedule', function() {
     })
 
     it('should return undefined as end if there is no end date', function() {
-      var d = new Date('2013-03-21T00:00:05Z')
+      const d = new Date('2013-03-21T00:00:05Z')
 
-      var s = {
+      const s = {
         schedules: [{ fd_a: [1363824005000] }]
       }
 
@@ -168,9 +177,9 @@ describe('Schedule', function() {
 
     // issue #27
     it('should merge valid ranges across anded schedule definitions', function() {
-      var d = new Date('Sat Sep 28 2013 11:00:00 GMT+0600 (YEKT)')
+      const d = new Date('Sat Sep 28 2013 11:00:00 GMT+0600 (YEKT)')
 
-      var s = recur()
+      const s = recur()
         .every()
         .hour()
         .between(0, 8)
@@ -192,16 +201,16 @@ describe('Schedule', function() {
     var e = new Date('2016-01-01T00:00:05Z')
 
     it('should return next valid range if one exists', function() {
-      var s = { schedules: [{ Y: [2011, 2012] }] }
+      const s = { schedules: [{ Y: [2011, 2012] }] }
       schedule(s)
         .prevRange(1, d)
         .should.eql([new Date('2011-01-01T00:00:00Z'), new Date('2013-01-01T00:00:00Z')])
     })
 
     it('should return undefined as end if there is no end date', function() {
-      var d = new Date('2013-03-21T00:00:05Z')
+      const d = new Date('2013-03-21T00:00:05Z')
 
-      var s = {
+      const s = {
         schedules: [{ fd_b: [1363824005000] }]
       }
 
@@ -212,9 +221,9 @@ describe('Schedule', function() {
 
     // issue #27
     it('should merge valid ranges across anded schedule definitions', function() {
-      var d = new Date('2013-09-30T09:00:00Z')
+      const d = new Date('2013-09-30T09:00:00Z')
 
-      var s = recur()
+      const s = recur()
         .every()
         .hour()
         .between(0, 8)

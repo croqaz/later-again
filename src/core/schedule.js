@@ -47,8 +47,7 @@ module.exports = function coreSchedule(sched) {
     const rEnd = isForward ? 1 : 0
     let loopCount = count
     let maxAttempts = 1000
-    let next
-    let end
+    let next, end
     let lastResult
 
     startDate = startDate ? new Date(startDate) : new Date()

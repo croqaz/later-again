@@ -2,6 +2,14 @@ const should = require('should')
 const later = require('../../src/units')
 const runner = require('./runner')(later, later.minute)
 
+describe('Minute unit', function() {
+  it('should validate and invalidate correctly', function() {
+    const d = new Date(2018, 2, 3, 4, 5, 6)
+    later.minute.isValid(d, 5).should.be.true()
+    later.minute.isValid(d, 1).should.not.be.true()
+  })
+})
+
 describe('Later.minute', function() {
   const tests = [
     {

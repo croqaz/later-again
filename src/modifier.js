@@ -8,7 +8,7 @@ module.exports = modifier
  * @param {Constraint} constraint: The constraint to be modified
  * @param {Integer} value: The starting value of the before constraint
  */
-modifier.before = modifier.b = function(constraint, values) {
+modifier.before = modifier.b = function (constraint, values) {
   const value = values[values.length - 1]
 
   return {
@@ -36,7 +36,7 @@ modifier.before = modifier.b = function(constraint, values) {
      * @param {Date} d: The date to check the value on
      * @param {Integer} val: The value to validate
      */
-    isValid: function(d, val) {
+    isValid: function (d, val) {
       return this.val(d) < value
     },
 
@@ -58,7 +58,7 @@ modifier.before = modifier.b = function(constraint, values) {
     /**
      * Pass through to the constraint.
      */
-    next: function(startDate, val) {
+    next: function (startDate, val) {
       val = val === value ? constraint.extent(startDate)[0] : value
       return constraint.next(startDate, val)
     },
@@ -66,7 +66,7 @@ modifier.before = modifier.b = function(constraint, values) {
     /**
      * Pass through to the constraint.
      */
-    prev: function(startDate, val) {
+    prev: function (startDate, val) {
       val = val === value ? value - 1 : constraint.extent(startDate)[1]
       return constraint.prev(startDate, val)
     }
@@ -79,7 +79,7 @@ modifier.before = modifier.b = function(constraint, values) {
  * @param {Constraint} constraint: The constraint to be modified
  * @param {Integer} value: The starting value of the after constraint
  */
-modifier.after = modifier.a = function(constraint, values) {
+modifier.after = modifier.a = function (constraint, values) {
   const value = values[0]
 
   return {
@@ -107,7 +107,7 @@ modifier.after = modifier.a = function(constraint, values) {
      * @param {Date} d: The date to check the value on
      * @param {Integer} val: The value to validate
      */
-    isValid: function(d, val) {
+    isValid: function (d, val) {
       return this.val(d) >= value
     },
 
@@ -129,15 +129,15 @@ modifier.after = modifier.a = function(constraint, values) {
     /**
      * Pass through to the constraint.
      */
-    next: function(startDate, val) {
-      if (val != value) val = constraint.extent(startDate)[0]
+    next: function (startDate, val) {
+      if (val !== value) val = constraint.extent(startDate)[0]
       return constraint.next(startDate, val)
     },
 
     /**
      * Pass through to the constraint.
      */
-    prev: function(startDate, val) {
+    prev: function (startDate, val) {
       val = val === value ? constraint.extent(startDate)[1] : value - 1
       return constraint.prev(startDate, val)
     }

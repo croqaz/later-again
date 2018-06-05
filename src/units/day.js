@@ -32,16 +32,6 @@ module.exports = {
   },
 
   /**
-   * Returns true if the val is valid for the date specified.
-   *
-   * @param {Date} d: The date to check the value on
-   * @param {Integer} val: The value to validate
-   */
-  isValid: function(d, val) {
-    return this.val(d) === (val || this.extent(d)[1])
-  },
-
-  /**
    * The minimum and maximum valid day values of the month specified.
    * Zero to specify the last day of the month.
    *
@@ -61,54 +51,69 @@ module.exports = {
     return (d.DExtent = [1, max])
   },
 
-  /**
-   * The start of the day of the specified date.
-   *
-   * @param {Date} d: The specified date
-   */
-  start: function(d) {
-    return d.DStart || (d.DStart = date.next(uYear.val(d), uMonth.val(d), this.val(d)))
-  },
+  isValid,
+  start,
+  end,
+  next,
+  prev
+}
 
-  /**
-   * The end of the day of the specified date.
-   *
-   * @param {Date} d: The specified date
-   */
-  end: function(d) {
-    return d.DEnd || (d.DEnd = date.prev(uYear.val(d), uMonth.val(d), this.val(d)))
-  },
+/**
+ * Returns true if the val is valid for the date specified.
+ *
+ * @param {Date} d: The date to check the value on
+ * @param {Integer} val: The value to validate
+ */
+function isValid(d, val) {
+  return module.exports.val(d) === (val || module.exports.extent(d)[1])
+}
 
-  /**
-   * Returns the start of the next instance of the day value indicated. Returns
-   * the first day of the next month if val is greater than the number of
-   * days in the following month.
-   *
-   * @param {Date} d: The starting date
-   * @param {int} val: The desired value, must be within extent
-   */
-  next: function(d, val) {
-    val = val > this.extent(d)[1] ? 1 : val
-    var month = date.nextRollover(d, val, this, uMonth),
-      DMax = this.extent(month)[1]
+/**
+ * The start of the day of the specified date.
+ *
+ * @param {Date} d: The specified date
+ */
+function start(d) {
+  return d.DStart || (d.DStart = date.next(uYear.val(d), uMonth.val(d), module.exports.val(d)))
+}
 
-    val = val > DMax ? 1 : val || DMax
+/**
+ * The end of the day of the specified date.
+ *
+ * @param {Date} d: The specified date
+ */
+function end(d) {
+  return d.DEnd || (d.DEnd = date.prev(uYear.val(d), uMonth.val(d), module.exports.val(d)))
+}
 
-    return date.next(uYear.val(month), uMonth.val(month), val)
-  },
+/**
+ * Returns the start of the next instance of the day value indicated. Returns
+ * the first day of the next month if val is greater than the number of
+ * days in the following month.
+ *
+ * @param {Date} d: The starting date
+ * @param {int} val: The desired value, must be within extent
+ */
+function next(d, val) {
+  val = val > module.exports.extent(d)[1] ? 1 : val
+  const month = date.nextRollover(d, val, module.exports, uMonth)
+  const DMax = module.exports.extent(month)[1]
+  val = val > DMax ? 1 : val || DMax
 
-  /**
-   * Returns the end of the previous instance of the day value indicated. Returns
-   * the last day in the previous month if val is greater than the number of days
-   * in the previous month.
-   *
-   * @param {Date} d: The starting date
-   * @param {int} val: The desired value, must be within extent
-   */
-  prev: function(d, val) {
-    var month = date.prevRollover(d, val, this, uMonth),
-      DMax = this.extent(month)[1]
+  return date.next(uYear.val(month), uMonth.val(month), val)
+}
 
-    return date.prev(uYear.val(month), uMonth.val(month), val > DMax ? DMax : val || DMax)
-  }
+/**
+ * Returns the end of the previous instance of the day value indicated. Returns
+ * the last day in the previous month if val is greater than the number of days
+ * in the previous month.
+ *
+ * @param {Date} d: The starting date
+ * @param {int} val: The desired value, must be within extent
+ */
+function prev(d, val) {
+  const month = date.prevRollover(d, val, module.exports, uMonth)
+  const DMax = module.exports.extent(month)[1]
+
+  return date.prev(uYear.val(month), uMonth.val(month), val > DMax ? DMax : val || DMax)
 }

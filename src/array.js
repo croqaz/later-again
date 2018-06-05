@@ -8,8 +8,8 @@
  * Sorts an array in natural ascending order, placing zero at the end
  * if zeroIsLast is true.
  */
-function arraySort(arr, zeroIsLast) {
-  arr.sort(function(a, b) {
+function arraySort (arr, zeroIsLast) {
+  arr.sort(function (a, b) {
     return +a - +b
   })
   if (zeroIsLast && arr[0] === 0) {
@@ -23,7 +23,7 @@ function arraySort(arr, zeroIsLast) {
  * Returns the next valid value in a range of values, wrapping as needed.
  * Assumes the array has already been sorted.
  */
-function arrayNext(val, values, extent) {
+function arrayNext (val, values, extent) {
   const zeroIsLargest = extent[0] !== 0
   let nextIdx = 0
   let cur
@@ -52,7 +52,7 @@ function arrayNext(val, values, extent) {
  * Returns the next invalid value in a range of values, wrapping as needed.
  * Assumes the array has already been sorted.
  */
-function arrayNextInvalid(val, values, extent) {
+function arrayNextInvalid (val, values, extent) {
   const [min, max] = extent
   const len = values.length
   const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0
@@ -85,7 +85,7 @@ function arrayNextInvalid(val, values, extent) {
  * Returns the previous valid value in a range of values, wrapping as needed.
  * Assumes the array has already been sorted.
  */
-function arrayPrev(val, values, extent) {
+function arrayPrev (val, values, extent) {
   const len = values.length
   const zeroIsLargest = extent[0] !== 0
   let prevIdx = len - 1
@@ -115,7 +115,7 @@ function arrayPrev(val, values, extent) {
  * Returns the previous invalid value in a range of values, wrapping as needed.
  * Assumes the array has already been sorted.
  */
-function arrayPrevInvalid(val, values, extent) {
+function arrayPrevInvalid (val, values, extent) {
   const [min, max] = extent
   const len = values.length
   const zeroVal = values[len - 1] === 0 && min !== 0 ? max : 0

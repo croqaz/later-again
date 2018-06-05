@@ -1,4 +1,3 @@
-
 const constants = require('./constants')
 
 /**
@@ -12,15 +11,8 @@ const constants = require('./constants')
  * @param {Int} m: Minute between 0 and 59, defaults to 0
  * @param {Int} s: Second between 0 and 59, defaults to 0
  */
-function next(Y, M, D, h, m, s) {
-  return new Date(Date.UTC(
-    Y,
-    M !== undefined ? M - 1 : 0,
-    D !== undefined ? D : 1,
-    h || 0,
-    m || 0,
-    s || 0
-  ))
+function next (Y, M, D, h, m, s) {
+  return new Date(Date.UTC(Y, M !== undefined ? M - 1 : 0, D !== undefined ? D : 1, h || 0, m || 0, s || 0))
 }
 
 /**
@@ -30,7 +22,7 @@ function next(Y, M, D, h, m, s) {
  * next largest time period. Used primarily when a constraint has a
  * variable extent.
  */
-function nextRollover(d, val, constraint, period) {
+function nextRollover (d, val, constraint, period) {
   const cur = constraint.val(d)
   const max = constraint.extent(d)[1]
 
@@ -48,7 +40,7 @@ function nextRollover(d, val, constraint, period) {
  * @param {Int} m: Minute between 0 and 59, defaults to 59
  * @param {Int} s: Second between 0 and 59, defaults to 59
  */
-function prev(Y, M, D, h, m, s) {
+function prev (Y, M, D, h, m, s) {
   const len = arguments.length
   const day = require('./units/day')
 
@@ -68,7 +60,7 @@ function prev(Y, M, D, h, m, s) {
  * previous largest time period. Used primarily when a constraint has a
  * variable extent.
  */
-function prevRollover(d, val, constraint, period) {
+function prevRollover (d, val, constraint, period) {
   const cur = constraint.val(d)
 
   return val >= cur || !val ? period.start(period.prev(d, period.val(d) - 1)) : period.start(d)

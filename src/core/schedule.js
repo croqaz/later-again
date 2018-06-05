@@ -39,14 +39,14 @@ module.exports = function coreSchedule(sched) {
    */
   function getInstances(dir, count, startDate, endDate, isRange) {
     const compare = compareFn(dir) // encapsulates difference between directions
-    const loopCount = count
-    const maxAttempts = 1000
     const schedStarts = []
     const exceptStarts = []
     const results = []
     const isForward = dir === 'next'
     const rStart = isForward ? 0 : 1
     const rEnd = isForward ? 1 : 0
+    let loopCount = count
+    let maxAttempts = 1000
     let next
     let end
     let lastResult
@@ -114,7 +114,9 @@ module.exports = function coreSchedule(sched) {
       }
       // otherwise store the start date and tick the start dates
       else {
-        results.push(isForward ? new Date(Math.max(startDate, next)) : getStart(schedules, schedStarts, next, endDate))
+        results.push(isForward
+          ? new Date(Math.max(startDate, next))
+          : getStart(schedules, schedStarts, next, endDate))
 
         tickStarts(dir, schedules, schedStarts, next)
       }
@@ -265,7 +267,7 @@ module.exports = function coreSchedule(sched) {
 
     for (let i = 0, len = startsArr.length; i < len; i++) {
       if (startsArr[i] && startsArr[i].getTime() === startDate.getTime()) {
-        var start = schedArr[i].tickStart(startDate)
+        const start = schedArr[i].tickStart.call(schedArr[i].tickStart, startDate)
 
         if (minEndDate && start < minEndDate) {
           return minEndDate
@@ -354,6 +356,7 @@ module.exports = function coreSchedule(sched) {
         // otherwise, return the maximum end date that was calculated
         if (!result || compare(end, result)) {
           result = end
+          break
         }
       }
     }
@@ -369,7 +372,9 @@ module.exports = function coreSchedule(sched) {
    * @param {String} dir: The direction to use, either 'next' or 'prev'
    */
   function compareFn(dir) {
-    return dir === 'next' ? (a, b) => !b || a.getTime() > b.getTime() : (a, b) => !a || b.getTime() > a.getTime()
+    return dir === 'next'
+      ? (a, b) => !b || a.getTime() > b.getTime()
+      : (a, b) => !a || b.getTime() > a.getTime()
   }
 
   /**
@@ -385,6 +390,7 @@ module.exports = function coreSchedule(sched) {
     for (let i = 1, len = arr.length; i < len; i++) {
       if (arr[i] && compare(next, arr[i])) {
         next = arr[i]
+        break
       }
     }
 

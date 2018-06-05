@@ -1,6 +1,4 @@
-const modifier = require('./src/modifier')
-const recur = require('./src/parse/recur')
-const cron = require('./src/parse/cron')
-const text = require('./src/parse/text')
+const { compile, schedule } = require('./src/core')
+const { recur, cron, text } = require('./src/parse')
 
-module.exports = { recur, cron, text }
+module.exports = { compile, schedule, recur, cron, text }

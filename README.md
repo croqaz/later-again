@@ -2,10 +2,10 @@
 # Later-again ⏰
 
   [![Standard Style Guide][style-img]][style-url]
-  [![Build Status](https://travis-ci.org/croqaz/later-again.svg)](https://travis-ci.org/croqaz/later-again)
+  [![Build Status][build-img]][build-url]
 
-When I discovered the original [Later.js](https://github.com/bunkat/later) library, I was in awe, like I've just discovered an ancient treasure. This is probably the best recurring schedules and calculating calendar occurrences ever. At least in the Node.js ecosystem.
-The amount of work refining this is incredible...
+When I discovered the original [Later.js](https://github.com/bunkat/later) library, I was in awe 😲  like I've just discovered an ancient treasure. This is probably the best recurring schedules and calculating calendar occurrences ever. At least in the Node.js ecosystem.
+The amount of work refining and testing this is incredible...
 
 So, thank you [Bill BunKat](https://github.com/bunkat) and contributors!
 
@@ -17,7 +17,7 @@ Simply install with npm:
 
 > $ npm install later-again
 
-The rest documentation can still be found in the old repository: https://bunkat.github.io/later
+The rest documentation can still be found in the original repository: https://bunkat.github.io/later
 
 -----
 
@@ -27,3 +27,5 @@ The rest documentation can still be found in the old repository: https://bunkat.
 
 [style-img]: https://img.shields.io/badge/code_style-standard-brightgreen.svg?style=flat-square
 [style-url]: https://standardjs.com
+[build-img]: https://travis-ci.org/croqaz/later-again.svg?style=flat-square
+[build-url]: https://travis-ci.org/croqaz/later-again

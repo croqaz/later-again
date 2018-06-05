@@ -27,5 +27,5 @@ The rest documentation can still be found in the original repository: https://bu
 
 [style-img]: https://img.shields.io/badge/code_style-standard-brightgreen.svg?style=flat-square
 [style-url]: https://standardjs.com
-[build-img]: https://travis-ci.org/croqaz/later-again.svg?style=flat-square
+[build-img]: https://img.shields.io/travis/croqaz/later-again.svg?style=flat-square
 [build-url]: https://travis-ci.org/croqaz/later-again

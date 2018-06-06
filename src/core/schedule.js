@@ -6,7 +6,7 @@
  * of the specified schedule.
  */
 const moment = require('moment-timezone')
-const coreCompile = require('./compile')
+const compile = require('./compile')
 const constants = require('../constants')
 
 module.exports = function coreSchedule(sched) {
@@ -20,11 +20,11 @@ module.exports = function coreSchedule(sched) {
   const exceptionsLen = sched.exceptions ? sched.exceptions.length : 0
 
   for (let i = 0; i < schedulesLen; i++) {
-    schedules.push(coreCompile(sched.schedules[i]))
+    schedules.push(compile(sched.schedules[i]))
   }
 
   for (var j = 0; j < exceptionsLen; j++) {
-    exceptions.push(coreCompile(sched.exceptions[j]))
+    exceptions.push(compile(sched.exceptions[j]))
   }
 
   /**

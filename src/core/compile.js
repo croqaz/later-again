@@ -13,7 +13,6 @@ const laterArray = require('../array')
 module.exports = function coreCompile(schedDef) {
   const constraints = []
   let constraintsLen = 0
-  let tickConstraint
 
   for (let key in schedDef) {
     const [name, mod] = key.split('_')
@@ -34,7 +33,7 @@ module.exports = function coreCompile(schedDef) {
 
   // this is the smallest constraint, we use this one to tick the schedule
   // when finding multiple instances
-  tickConstraint = constraints[constraintsLen - 1].constraint
+  const tickConstraint = constraints[constraintsLen - 1].constraint
 
   /**
    * Returns a function to use when comparing two dates. Encapsulates the

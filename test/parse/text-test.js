@@ -10,7 +10,11 @@ describe('Parse Text', function() {
       p.schedules[0].s.should.eql([0, 15, 30, 45])
     })
 
-    it('should parse every minute restriction', function() {
+    it('should parse every minute', function() {
+      parse('every minute').schedules[0].m.should.eql([0])
+    })
+
+    it('should parse every X minutes restriction', function() {
       const p = parse('every 15 minutes')
       p.schedules[0].should.have.ownProperty('m')
       p.schedules[0].m.should.eql([0, 15, 30, 45])
@@ -22,7 +26,11 @@ describe('Parse Text', function() {
       p.schedules[0].m.should.eql([4, 19, 34, 49])
     })
 
-    it('should parse every hour restriction', function() {
+    it('should parse every hour', function() {
+      parse('every hour').schedules[0].h.should.eql([0])
+    })
+
+    it('should parse every X hours restriction', function() {
       const p = parse('every 5 hours')
       p.schedules[0].should.have.ownProperty('h')
       p.schedules[0].h.should.eql([0, 5, 10, 15, 20])
@@ -32,6 +40,10 @@ describe('Parse Text', function() {
       const p = parse('every 2 hours between the 5th and 10th hour')
       p.schedules[0].should.have.ownProperty('h')
       p.schedules[0].h.should.eql([5, 7, 9])
+    })
+
+    it('should parse every day', function() {
+      parse('every day').schedules[0].D.should.eql([1])
     })
 
     it('should parse every day of week restriction', function() {
@@ -90,7 +102,17 @@ describe('Parse Text', function() {
       p.schedules[0].dy.should.eql(restriction)
     })
 
-    it('should parse every week of year restriction', function() {
+    it('should parse every 8 hours starting from time', function() {
+      const p = parse('every 8 hours starting on the 5 PM')
+      p.schedules[0].should.have.ownProperty('h')
+      p.schedules[0].h.should.eql([5, 13, 21])
+    })
+
+    it('should parse every week', function() {
+      parse('every week').schedules[0].wy.should.eql([1])
+    })
+
+    it('should parse every X weeks of year restriction', function() {
       const p = parse('every 10 weeks of the year')
       p.schedules[0].should.have.ownProperty('wy')
       p.schedules[0].wy.should.eql([1, 11, 21, 31, 41, 51])
@@ -336,6 +358,13 @@ describe('Parse Text', function() {
       p.schedules[0].d.should.eql([5])
     })
 
+    it('should parse on days of week names', function() {
+      parse('on Sun').schedules[0].d.should.eql([1])
+      parse('on Mon').schedules[0].d.should.eql([2])
+      parse('on Friday').schedules[0].d.should.eql([6])
+      parse('on Saturday').schedules[0].d.should.eql([7])
+    })
+
     it('should parse on last day of week restriction', function() {
       const p = parse('on the last day of the week')
       p.schedules[0].should.have.ownProperty('d')
@@ -423,9 +452,13 @@ describe('Parse Text', function() {
     })
 
     it('should parse 12 hour time in the pm', function() {
-      const p = parse('at 5:00 pm')
+      const p = parse('at 5:00 PM')
       p.schedules[0].should.have.ownProperty('t')
       p.schedules[0].t.should.eql([61200])
+    })
+
+    it('should parse hour time without minutes', function() {
+      parse('at 3 PM').schedules[0].t.should.eql([3600 * 15])
     })
   })
 

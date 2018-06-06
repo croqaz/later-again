@@ -28,7 +28,7 @@
     "format": "npx prettier --write src/*.js && npx standard --fix src/*.js",
     "test": "npx mocha -c test/**/*.js"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "devDependencies": {
     "lodash.range": "3.2.0",
     "mocha": "5.2.0",

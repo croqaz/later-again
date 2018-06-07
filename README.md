@@ -19,6 +19,13 @@ Simply install with npm:
 
 The rest documentation can still be found in the original repository: https://bunkat.github.io/later
 
+## Roadmap
+
+* Rewrite all the core compile and schedule functions
+* Start using Luxon or Dayjs. Parsing for time units is complicated and shouldn't be handled in this library.
+* Write tons of tests
+* Write 2 tons of tests
+
 -----
 
 ## License

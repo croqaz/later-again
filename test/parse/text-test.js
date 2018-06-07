@@ -26,6 +26,11 @@ describe('Parse Text', function() {
       p.schedules[0].m.should.eql([4, 19, 34, 49])
     })
 
+    it('should parse every weekday starting on', function() {
+      const p = parse('every 1 day of the week starting on the 5th')
+      p.schedules[0].d.should.eql([5, 6, 7]) // :(
+    })
+
     it('should parse every hour', function() {
       parse('every hour').schedules[0].h.should.eql([0])
     })
@@ -84,21 +89,19 @@ describe('Parse Text', function() {
 
     it('should parse every day of year restriction', function() {
       const p = parse('every 10 days of the year')
-      var restriction = []
-      for (var i = 0; i < 37; ++i) {
+      const restriction = []
+      for (let i = 0; i < 37; ++i) {
         restriction.push(i * 10 + 1)
       }
-      p.schedules[0].should.have.ownProperty('dy')
       p.schedules[0].dy.should.eql(restriction)
     })
 
     it('should parse every day of year restriction starting on 65', function() {
       const p = parse('every 10 days of the year starting on the 65th day of the year')
-      var restriction = []
-      for (var i = 6; i < 37; ++i) {
+      const restriction = []
+      for (let i = 6; i < 37; ++i) {
         restriction.push(i * 10 + 5)
       }
-      p.schedules[0].should.have.ownProperty('dy')
       p.schedules[0].dy.should.eql(restriction)
     })
 
@@ -446,15 +449,11 @@ describe('Parse Text', function() {
     })
 
     it('should parse 12 hour time in the am', function() {
-      const p = parse('at 5:00 am')
-      p.schedules[0].should.have.ownProperty('t')
-      p.schedules[0].t.should.eql([18000])
+      parse('at 5:00 am').schedules[0].t.should.eql([3600 * 5])
     })
 
     it('should parse 12 hour time in the pm', function() {
-      const p = parse('at 5:00 PM')
-      p.schedules[0].should.have.ownProperty('t')
-      p.schedules[0].t.should.eql([61200])
+      parse('at 5:00 PM').schedules[0].t.should.eql([3600 * 17])
     })
 
     it('should parse hour time without minutes', function() {
@@ -527,17 +526,28 @@ describe('Parse Text', function() {
   })
 
   describe('except', function() {
-    it('should create an exception schedule', function() {
+    it('should create an exception for hours', function() {
       const p = parse('at 5:00 except at 10:00')
       p.schedules[0].t.should.eql([18000])
       p.exceptions[0].t.should.eql([36000])
+    })
+
+    it('should create an exception for every X hours', function () {
+      const p = parse('every 5 hours except at 10:00')
+      // p.schedules[0].h.should.eql([0, 5, 10, 15, 20]) // ???
+      // p.exceptions[0].t.should.eql([36000]) // ???
+    })
+
+    it('should create an exception for every weekday', function() {
+      const p = parse('every weekday except friday')
+      // p.sschedules[0].d.should.eql([2, 3, 4, 5, 6]) // ???
+      // p.exceptions[0].should.have.ownProperty('t') // ???
     })
   })
 
   describe('error', function() {
     it('should return the position of the first error', function() {
-      const p = parse('at 5:00 except on 10:00')
-      p.error.should.eql(18)
+      parse('at 5:00 except on 10:00').error.should.eql(18)
     })
   })
 })

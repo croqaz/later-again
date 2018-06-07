@@ -70,7 +70,9 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
    * @param {Int} offset: Any offset that must be added to the value
    */
   function getValue (value, offset, max) {
-    return isNaN(value) ? NAMES[value] || null : Math.min(+value + (offset || 0), max || 9999)
+    return isNaN(value)
+      ? NAMES[value] || null
+      : Math.min(+value + (offset || 0), max || 9999)
   }
 
   /**
@@ -81,9 +83,8 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
    */
   function cloneSchedule (sched) {
     const clone = {}
-    let field
 
-    for (field in sched) {
+    for (let field in sched) {
       if (field !== 'dc' && field !== 'd') {
         clone[field] = sched[field].slice(0)
       }
@@ -107,7 +108,7 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
     }
 
     const loopTo = function (start, max) {
-      var i = start
+      let i = start
 
       while (i <= max) {
         if (sched[name].indexOf(i) < 0) {
@@ -120,10 +121,8 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
     // if the min is greater than the max, loop it
     if (min > max) {
       const field = FIELDS[name]
-
       // add up to the max value
       loopTo(min, field[2])
-
       // loop it over
       loopTo(field[1], max)
     } else {
@@ -270,24 +269,18 @@ module.exports = function parseCron (expr, hasSeconds, tz) {
    * @param {String} expr: The cron expression to parse
    */
   function parseExpr (expr) {
-    var schedule = { schedules: [{}], exceptions: [], tz },
-      components = expr.replace(/(\s)+/g, ' ').split(' '),
-      field,
-      f,
-      component,
-      items
+    const schedule = { schedules: [{}], exceptions: [], tz }
+    const components = expr.replace(/(\s)+/g, ' ').split(' ')
 
-    for (field in FIELDS) {
-      f = FIELDS[field]
-      component = components[f[0]]
+    for (let field in FIELDS) {
+      let f = FIELDS[field]
+      let component = components[f[0]]
       if (component && component !== '*' && component !== '?') {
         // need to sort so that any #'s come last, otherwise
         // schedule clones to handle # won't contain all of the
         // other constraints
-        items = component.split(',').sort(itemSorter)
-        var i,
-          length = items.length
-        for (i = 0; i < length; i++) {
+        let items = component.split(',').sort(itemSorter)
+        for (let i = 0; i < items.length; i++) {
           parse(items[i], schedule, field, f[1], f[2], f[3])
         }
       }

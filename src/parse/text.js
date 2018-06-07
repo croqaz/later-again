@@ -110,8 +110,6 @@ module.exports = function parseText (str, tz) {
       whiteSpace = /\s+/,
       token,
       curInput,
-      m,
-      scanToken,
       start,
       len
 
@@ -124,11 +122,9 @@ module.exports = function parseText (str, tz) {
       curInput = input.substring(start)
       token = t(start, start, input.split(whiteSpace)[0])
 
-      var i,
-        length = scanTokens.length
-      for (i = 0; i < length; i++) {
-        scanToken = scanTokens[i]
-        m = scanToken.exec(curInput)
+      for (let i = 0; i < scanTokens.length; i++) {
+        let scanToken = scanTokens[i]
+        let m = scanToken.exec(curInput)
         if (m && m.index === 0 && m[0].length > len) {
           len = m[0].length
           token = t(start, start + len, curInput.substring(0, len), scanToken)
@@ -150,7 +146,7 @@ module.exports = function parseText (str, tz) {
    * @param {TokenType} exepectedToken: The types of token to scan for
    */
   function scan (expectedToken) {
-    var token = peek(expectedToken)
+    const token = peek(expectedToken)
     pos = token.endPos
     return token
   }
@@ -166,7 +162,7 @@ module.exports = function parseText (str, tz) {
     const end = checkAndParse(TOKENTYPES.through) ? +parseTokenValue(tokenType) : start
     const nums = []
 
-    for (var i = start; i <= end; i++) {
+    for (let i = start; i <= end; i++) {
       nums.push(i)
     }
 
@@ -180,7 +176,7 @@ module.exports = function parseText (str, tz) {
    * @param {TokenType} tokenType: The type of range values allowed
    */
   function parseRanges (tokenType) {
-    var nums = parseThroughExpr(tokenType)
+    let nums = parseThroughExpr(tokenType)
     while (checkAndParse(TOKENTYPES.and)) {
       nums = nums.concat(parseThroughExpr(tokenType))
     }
@@ -250,7 +246,7 @@ module.exports = function parseText (str, tz) {
 
     const r = recur()
     while (pos < input.length && error < 0) {
-      var token = parseToken([
+      const token = parseToken([
         TOKENTYPES.every,
         TOKENTYPES.after,
         TOKENTYPES.before,
@@ -327,7 +323,7 @@ module.exports = function parseText (str, tz) {
    * @param {Recur} r: The recurrence to add the time period to
    */
   function parseTimePeriod (r) {
-    var timePeriod = parseToken([
+    const timePeriod = parseToken([
       TOKENTYPES.second,
       TOKENTYPES.minute,
       TOKENTYPES.hour,
@@ -389,7 +385,7 @@ module.exports = function parseText (str, tz) {
    * @param {TokenType} tokenType: The type or types of token to parse
    */
   function checkAndParse (tokenType) {
-    var found = peek(tokenType).type === tokenType
+    const found = peek(tokenType).type === tokenType
     if (found) {
       scan(tokenType)
     }
@@ -402,7 +398,7 @@ module.exports = function parseText (str, tz) {
    * @param {TokenType} tokenType: The type or types of token to parse
    */
   function parseToken (tokenType) {
-    var t = scan(tokenType)
+    const t = scan(tokenType)
     if (t.type) {
       t.text = convertString(t.text, tokenType)
     } else {
@@ -428,7 +424,7 @@ module.exports = function parseText (str, tz) {
    * @param {TokenType} tokenType: The type of token to convert
    */
   function convertString (str, tokenType) {
-    var output = str
+    let output = str
 
     switch (tokenType) {
       case TOKENTYPES.time:
